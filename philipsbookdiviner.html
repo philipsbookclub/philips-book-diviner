@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Philip's Book Diviner</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Creepster&family=Metal+Mania&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for Zoltar theme */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to bottom right, #4a0e0e, #1a0505); /* Dark, mysterious background */
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Prevent scrollbar from animation */
+        }
+
+        .zoltar-container {
+            background-color: #2c0808; /* Darker background for the machine */
+            border: 8px solid #8b4513; /* Wood-like border */
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255, 255, 255, 0.1);
+            padding: 1.5rem 2rem; /* Adjusted padding for top image */
+            max-width: 90%;
+            width: 650px; /* Slightly wider to accommodate image */
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            perspective: 1000px; /* For 3D flip effect */
+        }
+
+        .zoltar-header-image-container {
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .zoltar-header-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .fortune-card-wrapper {
+            position: relative;
+            width: 250px; /* Fixed width for the card */
+            height: 350px; /* Fixed height for the card */
+            margin: 0 auto 2rem auto;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+            cursor: pointer;
+            transition: transform 0.6s ease-in-out, box-shadow 0.3s ease-in-out; /* Flip transition and glow */
+            transform-style: preserve-3d; /* Keep children in 3D space */
+        }
+
+        .fortune-card-wrapper.flipped {
+            transform: rotateY(180deg);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.7), 0 0 40px rgba(255, 215, 0, 0.4); /* Slightly reduced glow */
+        }
+
+        .fortune-card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden; /* Hide the back of the face when rotated */
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 1.5rem;
+            box-sizing: border-box;
+        }
+
+        .fortune-card-front {
+            background: linear-gradient(to bottom right, #8b0000, #4a0000); /* Dark red gradient */
+            border: 4px solid #ffd700; /* Gold border */
+            z-index: 2;
+        }
+
+        .fortune-card-back {
+            background-color: #f5f5dc; /* Light parchment-like background */
+            color: #333;
+            border: 4px solid #8b4513; /* Wood border */
+            transform: rotateY(180deg); /* Initially rotated to be the back */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Align content to top for book details */
+            align-items: center;
+            text-align: left;
+            padding: 1rem; /* Adjust padding for content */
+            overflow: hidden; /* Hide overflowing book during animation */
+        }
+
+        .fortune-card-text {
+            font-family: 'Metal Mania', cursive; /* Mystical text font */
+            color: #ffd700;
+            font-size: 1.8rem;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+            text-align: center;
+        }
+
+        /* Mystical Sparkle Effect */
+        .fortune-card-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            /* Use transform: scale for animation instead of width/height */
+            background: radial-gradient(circle at center, #ffd700 0%, transparent 70%);
+            border-radius: 50%;
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0);
+            z-index: 3; /* Above the card faces */
+            pointer-events: none; /* Allow clicks to pass through */
+        }
+
+        .fortune-card-wrapper.sparkle::before {
+            animation: sparkle-burst 0.7s ease-out forwards;
+        }
+
+        @keyframes sparkle-burst {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0);
+            }
+            30% {
+                opacity: 0.7;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1.5);
+            }
+        }
+
+
+        .book-image {
+            max-width: 150px; /* Max width for the book cover */
+            height: auto;
+            border-radius: 5px;
+            margin-bottom: 0.75rem; /* Space between image and text */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            opacity: 0; /* Initially hidden for pop-out effect */
+            transform: scale(0.8) translateY(20px); /* Initial state for pop-out */
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+
+        .book-image.show {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        .book-title {
+            font-size: 1.3rem; /* Slightly smaller to fit */
+            font-weight: bold;
+            color: #4a0e0e; /* Dark red for title */
+            margin-bottom: 0.25rem;
+            text-align: center;
+            opacity: 0; /* Initially hidden for pop-out effect */
+            transform: translateY(10px);
+            transition: opacity 0.5s ease-out 0.1s, transform 0.5s ease-out 0.1s; /* Delayed transition */
+        }
+
+        .book-title.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .book-author {
+            font-size: 0.95rem; /* Slightly smaller to fit */
+            color: #8b4513; /* Brown for author */
+            margin-bottom: 0.75rem;
+            text-align: center;
+            opacity: 0; /* Initially hidden for pop-out effect */
+            transform: translateY(10px);
+            transition: opacity 0.5s ease-out 0.2s, transform 0.5s ease-out 0.2s; /* Delayed transition */
+        }
+
+        .book-author.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .book-description {
+            font-size: 0.85rem; /* Smaller to fit */
+            line-height: 1.4;
+            color: #555;
+            text-align: justify;
+            opacity: 0; /* Initially hidden for pop-out effect */
+            transform: translateY(10px);
+            transition: opacity 0.5s ease-out 0.3s, transform 0.5s ease-out 0.3s; /* Delayed transition */
+        }
+
+        .book-description.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .zoltar-container {
+                padding: 1rem;
+                width: 95%;
+            }
+            .zoltar-header-image {
+                max-width: 90%;
+            }
+            .fortune-card-wrapper {
+                width: 200px;
+                height: 300px;
+            }
+            .fortune-card-face {
+                padding: 1.5rem 1rem;
+            }
+            .fortune-card-text {
+                font-size: 1.5rem;
+            }
+            .book-image {
+                max-width: 100px;
+            }
+            .book-title {
+                font-size: 1.1rem;
+            }
+            .book-author {
+                font-size: 0.9rem;
+            }
+            .book-description {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="zoltar-container">
+    <div class="zoltar-header-image-container">
+        <img src="files/uploaded:Gemini_Generated_Image_5xddfz5xddfz5xdd.jpg-c9147016-84ff-4283-8eef-057f075b1ddb" alt="Philip's Book Diviner" class="zoltar-header-image">
+    </div>
+    <p class="text-gray-300 mb-6">Click the card to reveal your next literary adventure!</p>
+
+    <div id="fortuneCardWrapper" class="fortune-card-wrapper">
+        <div id="fortuneCardFront" class="fortune-card-face fortune-card-front">
+            <p class="fortune-card-text">Tap for Wisdom</p>
+            <p class="fortune-card-text text-sm mt-2">Your Future Read Awaits</p>
+        </div>
+        <div id="fortuneCardBack" class="fortune-card-face fortune-card-back">
+            <img id="bookImage" class="book-image" src="" alt="Book Cover">
+            <p id="bookTitle" class="book-title"></p>
+            <p id="bookAuthor" class="book-author"></p>
+            <p id="bookDescription" class="book-description"></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Array of book recommendations with actual image URLs
+    const books = [
+        {
+            title: "Dune",
+            author: "Frank Herbert",
+            description: "A blend of science fiction and ecological themes, set on a desert planet at the center of a galactic empire, where noble houses battle for control over a vital resource.",
+            imageUrl: "https://art.marcsimonetti.com/wp-content/uploads/2016/09/dune_cover.jpg"
+        },
+        {
+            title: "To Kill a Mockingbird",
+            author: "Harper Lee",
+            description: "A powerful story of racial injustice and childhood innocence in the American South, seen through the eyes of young Scout Finch.",
+            imageUrl: "https://upload.wikimedia.org/wikipedia/en/4/4f/To_Kill_a_Mockingbird_%28first_edition_cover%29.jpg"
+        },
+        {
+            title: "1984",
+            author: "George Orwell",
+            description: "A dystopian social science fiction novel and cautionary tale about the dangers of totalitarianism and mass surveillance.",
+            imageUrl: "https://upload.wikimedia.org/wikipedia/commons/c/c3/Nineteen_Eighty-Four_cover_by_Penguin.jpg"
+        },
+        {
+            title: "Pride and Prejudice",
+            author: "Jane Austen",
+            description: "A classic novel of manners, love, and societal expectations in 19th-century England, following the spirited Elizabeth Bennet.",
+            imageUrl: "https://upload.wikimedia.org/wikipedia/en/1/1b/Pride_and_prejudice.jpg"
+        },
+        {
+            title: "The Hobbit",
+            author: "J.R.R. Tolkien",
+            description: "A fantasy novel that serves as a prelude to The Lord of the Rings, following the journey of Bilbo Baggins to reclaim treasure from a dragon.",
+            imageUrl: "https://c8.alamy.com/comp/FYHJFT/old-paperback-book-the-hobbit-by-jrr-tolkein-FYHJFT.jpg"
+        },
+        {
+            title: "The Great Gatsby",
+            author: "F. Scott Fitzgerald",
+            description: "A tragic story of the American Dream, wealth, and obsession set in the roaring twenties, narrated by Nick Carraway.",
+            imageUrl: "https://upload.wikimedia.org/wikipedia/commons/7/7a/The_Great_Gatsby_Cover_1925_Retouched.jpg"
+        },
+        {
+            title: "Sapiens: A Brief History of Humankind",
+            author: "Yuval Noah Harari",
+            description: "A non-fiction book that surveys the entire history of humankind, from the evolution of Homo sapiens to the present day, and even into the future.",
+            imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Sapiens_-_A_Brief_History_of_Humankind.jpg/450px-Sapiens_-_A_Brief_History_of_Humankind.jpg"
+        },
+        {
+            title: "Project Hail Mary",
+            author: "Andy Weir",
+            description: "A gripping science fiction novel about an astronaut who wakes up on a spaceship with no memory of who he is or how he got there, tasked with saving humanity.",
+            imageUrl: "https://images.penguinrandomhouse.com/cover/9780593135228"
+        },
+        {
+            title: "Circe",
+            author: "Madeline Miller",
+            description: "A captivating retelling of the Greek myth of Circe, the goddess of magic, from her perspective, exploring themes of power, exile, and self-discovery.",
+            imageUrl: "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1536730237l/35959740._SY475_.jpg"
+        },
+        {
+            title: "The Midnight Library",
+            author: "Matt Haig",
+            description: "A philosophical novel about a woman who gets a chance to try out different lives she could have lived, exploring themes of regret, choice, and finding happiness.",
+            imageUrl: "https://www.matthaig.com/wp-content/uploads/2020/07/Midnight-Library-Cover-768x1152.jpg"
+        }
+    ];
+
+    const fortuneCardWrapper = document.getElementById('fortuneCardWrapper');
+    const fortuneCardFront = document.getElementById('fortuneCardFront');
+    const fortuneCardBack = document.getElementById('fortuneCardBack');
+    const bookImage = document.getElementById('bookImage');
+    const bookTitle = document.getElementById('bookTitle');
+    const bookAuthor = document.getElementById('bookAuthor');
+    const bookDescription = document.getElementById('bookDescription');
+
+    let lastBookIndex = -1;
+    let isBookRevealed = false; // New state variable: true if book is showing, false if front card is showing
+
+    // Function to preload images
+    function preloadImages(imageUrls) {
+        imageUrls.forEach(url => {
+            const img = new Image();
+            img.src = url;
+        });
+    }
+
+    fortuneCardWrapper.addEventListener('click', () => {
+        // Always trigger sparkle effect on click
+        fortuneCardWrapper.classList.add('sparkle');
+        setTimeout(() => {
+            fortuneCardWrapper.classList.remove('sparkle');
+        }, 700); // Match sparkle animation duration
+
+        if (isBookRevealed) {
+            // If a book is currently revealed, flip back to the front
+            fortuneCardWrapper.classList.remove('flipped');
+            // Hide book details immediately for a clean transition
+            bookImage.classList.remove('show');
+            bookTitle.classList.remove('show');
+            bookAuthor.classList.remove('show');
+            bookDescription.classList.remove('show');
+            isBookRevealed = false;
+        } else {
+            // If front card is showing, reveal a new book
+            revealNewBook();
+        }
+    });
+
+    function revealNewBook() {
+        // Select a random book, ensuring it's not the same as the last one if possible
+        let randomIndex;
+        do {
+            randomIndex = Math.floor(Math.random() * books.length);
+        } while (books.length > 1 && randomIndex === lastBookIndex);
+        lastBookIndex = randomIndex;
+
+        const selectedBook = books[randomIndex];
+
+        // Update the content on the back of the card
+        bookImage.src = selectedBook.imageUrl;
+        bookTitle.textContent = selectedBook.title;
+        bookAuthor.textContent = `By ${selectedBook.author}`;
+        bookDescription.textContent = selectedBook.description;
+
+        // Trigger the flip to reveal the book
+        fortuneCardWrapper.classList.add('flipped');
+        isBookRevealed = true;
+
+        // Trigger the "pop out" animation for the book details after the flip completes
+        setTimeout(() => {
+            bookImage.classList.add('show');
+            bookTitle.classList.add('show');
+            bookAuthor.classList.add('show');
+            bookDescription.classList.add('show');
+        }, 300); // Half of the flip duration
+    }
+
+    // Initial state: ensure card is not flipped and content is hidden
+    document.addEventListener('DOMContentLoaded', () => {
+        fortuneCardWrapper.classList.remove('flipped');
+        isBookRevealed = false;
+        bookImage.classList.remove('show');
+        bookTitle.classList.remove('show');
+        bookAuthor.classList.remove('show');
+        bookDescription.classList.remove('show');
+
+        // Set a placeholder for the book image and text on initial load,
+        // even though it's hidden, to avoid empty alt text.
+        bookImage.src = "https://placehold.co/150x225/000000/FFFFFF?text=Book+Cover";
+        bookTitle.textContent = "Your Literary Journey Awaits...";
+        bookAuthor.textContent = "Click the card to discover your next read.";
+        bookDescription.textContent = "";
+
+        // Preload all book cover images
+        const imageUrls = books.map(book => book.imageUrl);
+        preloadImages(imageUrls);
+    });
+
+</script>
+</body>
+</html>
