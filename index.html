@@ -41,7 +41,7 @@
         }
 
         .zoltar-header-image {
-            max-width: 50%;
+            max-width: 30%;
             height: auto;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
@@ -57,6 +57,7 @@
             cursor: pointer;
             transition: transform 0.6s ease-in-out, box-shadow 0.3s ease-in-out; /* Flip transition and glow */
             transform-style: preserve-3d; /* Keep children in 3D space */
+            z-index: 100; /* Ensure it's above other content */
         }
 
         .fortune-card-wrapper.flipped {
@@ -140,13 +141,83 @@
             }
         }
 
+        /* Fullscreen Overlay */
+        .fullscreen-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.8); /* Dark overlay */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease-in-out, visibility 0.5s;
+            z-index: 1000; /* Above everything else */
+        }
+
+        .fullscreen-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .fullscreen-card-content {
+            background-color: #f5f5dc;
+            color: #333;
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 800px; /* Max width for fullscreen card */
+            width: 90%;
+            max-height: 90vh; /* Max height for fullscreen card */
+            overflow-y: auto; /* Enable scrolling for long content */
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform: scale(0.8); /* Initial state for pop-in */
+            opacity: 0;
+            transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+        }
+
+        .fullscreen-overlay.active .fullscreen-card-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #8b4513;
+            color: #ffd700;
+            border: 2px solid #ffd700;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001; /* Ensure button is clickable */
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .close-button:hover {
+            background: #ffd700;
+            color: #8b4513;
+        }
 
         .book-image {
-            max-width: 150px; /* Max width for the book cover */
+            max-width: 200px; /* Larger for fullscreen */
             height: auto;
-            border-radius: 5px;
-            margin-bottom: 0.75rem; /* Space between image and text */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             opacity: 0; /* Initially hidden for pop-out effect */
             transform: scale(0.8) translateY(20px); /* Initial state for pop-out */
             transition: opacity 0.5s ease-out, transform 0.5s ease-out;
@@ -158,14 +229,14 @@
         }
 
         .book-title {
-            font-size: 1.3rem; /* Slightly smaller to fit */
+            font-size: 1.8rem; /* Larger for fullscreen */
             font-weight: bold;
-            color: #4a0e0e; /* Dark red for title */
-            margin-bottom: 0.25rem;
+            color: #4a0e0e;
+            margin-bottom: 0.75rem;
             text-align: center;
-            opacity: 0; /* Initially hidden for pop-out effect */
+            opacity: 0;
             transform: translateY(10px);
-            transition: opacity 0.5s ease-out 0.1s, transform 0.5s ease-out 0.1s; /* Delayed transition */
+            transition: opacity 0.5s ease-out 0.1s, transform 0.5s ease-out 0.1s;
         }
 
         .book-title.show {
@@ -174,13 +245,13 @@
         }
 
         .book-author {
-            font-size: 0.95rem; /* Slightly smaller to fit */
-            color: #8b4513; /* Brown for author */
-            margin-bottom: 0.75rem;
+            font-size: 1.3rem; /* Larger for fullscreen */
+            color: #8b4513;
+            margin-bottom: 1rem;
             text-align: center;
-            opacity: 0; /* Initially hidden for pop-out effect */
+            opacity: 0;
             transform: translateY(10px);
-            transition: opacity 0.5s ease-out 0.2s, transform 0.5s ease-out 0.2s; /* Delayed transition */
+            transition: opacity 0.5s ease-out 0.2s, transform 0.5s ease-out 0.2s;
         }
 
         .book-author.show {
@@ -188,51 +259,78 @@
             transform: translateY(0);
         }
 
-        .book-description {
-            font-size: 0.85rem; /* Smaller to fit */
-            line-height: 1.4;
+        .book-blurb {
+            font-size: 1rem;
+            line-height: 1.6;
             color: #555;
             text-align: justify;
-            opacity: 0; /* Initially hidden for pop-out effect */
+            margin-bottom: 1.25rem;
+            opacity: 0;
             transform: translateY(10px);
-            transition: opacity 0.5s ease-out 0.3s, transform 0.5s ease-out 0.3s; /* Delayed transition */
+            transition: opacity 0.5s ease-out 0.3s, transform 0.5s ease-out 0.3s;
         }
 
-        .book-description.show {
+        .book-blurb.show {
             opacity: 1;
             transform: translateY(0);
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 640px) {
-            .zoltar-container {
-                padding: 1rem;
-                width: 95%;
-            }
-            .zoltar-header-image {
-                max-width: 90%;
-            }
-            .fortune-card-wrapper {
-                width: 200px;
-                height: 300px;
-            }
-            .fortune-card-face {
-                padding: 1.5rem 1rem;
-            }
-            .fortune-card-text {
-                font-size: 1.5rem;
+        .book-sign {
+            font-size: 1.1rem;
+            font-style: italic;
+            font-weight: bold;
+            color: #4a0e0e; /* Dark red for sign */
+            text-align: center;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.5s ease-out 0.4s, transform 0.5s ease-out 0.4s;
+        }
+
+        .book-sign.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive adjustments for fullscreen */
+        @media (max-width: 768px) {
+            .fullscreen-card-content {
+                padding: 1.5rem;
             }
             .book-image {
-                max-width: 100px;
+                max-width: 150px;
             }
             .book-title {
-                font-size: 1.1rem;
+                font-size: 1.5rem;
             }
             .book-author {
+                font-size: 1.1rem;
+            }
+            .book-blurb {
                 font-size: 0.9rem;
             }
-            .book-description {
-                font-size: 0.8rem;
+            .book-sign {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .fullscreen-card-content {
+                padding: 1rem;
+            }
+            .book-image {
+                max-width: 120px;
+            }
+            .book-title {
+                font-size: 1.3rem;
+            }
+            .book-author {
+                font-size: 1rem;
+            }
+            .book-blurb {
+                font-size: 0.85rem;
+            }
+            .book-sign {
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -240,7 +338,7 @@
 <body>
 <div class="zoltar-container">
     <div class="zoltar-header-image-container">
-        <img src="Gemini_Generated_Image_5xddfz5xddfz5xdd.png" alt="Philip's Book Diviner" class="zoltar-header-image">
+        <img src="Gemini_Generated_Image_5xddfz5xddfz5xdd.pn" alt="Philip's Book Diviner" class="zoltar-header-image">
     </div>
     <p class="text-gray-300 mb-6">Click the card to reveal your next literary adventure!</p>
 
@@ -250,89 +348,92 @@
             <p class="fortune-card-text text-sm mt-2">Your Future Read Awaits</p>
         </div>
         <div id="fortuneCardBack" class="fortune-card-face fortune-card-back">
-            <img id="bookImage" class="book-image" src="" alt="Book Cover">
-            <p id="bookTitle" class="book-title"></p>
-            <p id="bookAuthor" class="book-author"></p>
-            <p id="bookDescription" class="book-description"></p>
+            <!-- Book content will be dynamically loaded here for the small card view -->
+            <img id="smallBookImage" class="book-image" src="" alt="Book Cover">
+            <p id="smallBookTitle" class="book-title font-bold"></p>
+            <p id="smallBookAuthor" class="book-author"></p>
+            <p id="smallBookSign" class="book-sign italic font-bold"></p>
         </div>
     </div>
 </div>
 
+<!-- Fullscreen Overlay for Book Details -->
+<div id="fullscreenOverlay" class="fullscreen-overlay">
+    <div class="fullscreen-card-content">
+        <button id="closeButton" class="close-button">X</button>
+        <img id="fullscreenBookImage" class="book-image" src="" alt="Book Cover">
+        <p id="fullscreenBookTitle" class="book-title font-bold"></p>
+        <p id="fullscreenBookAuthor" class="book-author"></p>
+        <p id="fullscreenBookBlurb" class="book-blurb"></p>
+        <p id="fullscreenBookSign" class="book-sign italic font-bold"></p>
+    </div>
+</div>
+
 <script>
-    // Array of book recommendations with actual image URLs
-    const books = [
+    // Array of book recommendations
+    const allBooks = [
         {
-            title: "Dune",
-            author: "Frank Herbert",
-            description: "A blend of science fiction and ecological themes, set on a desert planet at the center of a galactic empire, where noble houses battle for control over a vital resource.",
-            imageUrl: "https://art.marcsimonetti.com/wp-content/uploads/2016/09/dune_cover.jpg"
-        },
-        {
-            title: "To Kill a Mockingbird",
-            author: "Harper Lee",
-            description: "A powerful story of racial injustice and childhood innocence in the American South, seen through the eyes of young Scout Finch.",
-            imageUrl: "https://upload.wikimedia.org/wikipedia/en/4/4f/To_Kill_a_Mockingbird_%28first_edition_cover%29.jpg"
-        },
-        {
-            title: "1984",
-            author: "George Orwell",
-            description: "A dystopian social science fiction novel and cautionary tale about the dangers of totalitarianism and mass surveillance.",
-            imageUrl: "https://upload.wikimedia.org/wikipedia/commons/c/c3/Nineteen_Eighty-Four_cover_by_Penguin.jpg"
-        },
-        {
-            title: "Pride and Prejudice",
-            author: "Jane Austen",
-            description: "A classic novel of manners, love, and societal expectations in 19th-century England, following the spirited Elizabeth Bennet.",
-            imageUrl: "https://upload.wikimedia.org/wikipedia/en/1/1b/Pride_and_prejudice.jpg"
-        },
-        {
-            title: "The Hobbit",
-            author: "J.R.R. Tolkien",
-            description: "A fantasy novel that serves as a prelude to The Lord of the Rings, following the journey of Bilbo Baggins to reclaim treasure from a dragon.",
-            imageUrl: "https://c8.alamy.com/comp/FYHJFT/old-paperback-book-the-hobbit-by-jrr-tolkein-FYHJFT.jpg"
-        },
-        {
-            title: "The Great Gatsby",
-            author: "F. Scott Fitzgerald",
-            description: "A tragic story of the American Dream, wealth, and obsession set in the roaring twenties, narrated by Nick Carraway.",
-            imageUrl: "https://upload.wikimedia.org/wikipedia/commons/7/7a/The_Great_Gatsby_Cover_1925_Retouched.jpg"
-        },
-        {
-            title: "Sapiens: A Brief History of Humankind",
-            author: "Yuval Noah Harari",
-            description: "A non-fiction book that surveys the entire history of humankind, from the evolution of Homo sapiens to the present day, and even into the future.",
-            imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Sapiens_-_A_Brief_History_of_Humankind.jpg/450px-Sapiens_-_A_Brief_History_of_Humankind.jpg"
-        },
-        {
-            title: "Project Hail Mary",
-            author: "Andy Weir",
-            description: "A gripping science fiction novel about an astronaut who wakes up on a spaceship with no memory of who he is or how he got there, tasked with saving humanity.",
-            imageUrl: "https://images.penguinrandomhouse.com/cover/9780593135228"
-        },
-        {
-            title: "Circe",
-            author: "Madeline Miller",
-            description: "A captivating retelling of the Greek myth of Circe, the goddess of magic, from her perspective, exploring themes of power, exile, and self-discovery.",
-            imageUrl: "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1536730237l/35959740._SY475_.jpg"
-        },
-        {
-            title: "The Midnight Library",
-            author: "Matt Haig",
-            description: "A philosophical novel about a woman who gets a chance to try out different lives she could have lived, exploring themes of regret, choice, and finding happiness.",
-            imageUrl: "https://www.matthaig.com/wp-content/uploads/2020/07/Midnight-Library-Cover-768x1152.jpg"
+            title: "Oranges",
+            author: "John McPhee",
+            blurb: "I know, seriously, a book on oranges? But it’s incredibly written. John McPhee, 94, is the godfather of the Princeton journalism department. I helped him up the stairs once and I haven’t washed that arm since (just kidding…).",
+            sign: "Learn how good storytelling can make even mundane topics shine.",
+            imageUrl: "files/uploaded:71bxytN5LoL._UF1000,1000_QL80_.jpg-265606cb-cade-4807-b073-bb0ca2d2e72e"
         }
+        // Add more books here as you provide them
+        /*
+        ,
+        {
+            title: "Another Book",
+            author: "Another Author",
+            blurb: "This is a blurb for another book.",
+            sign: "This is another sign.",
+            imageUrl: "URL_TO_ANOTHER_BOOK_COVER"
+        }
+        */
     ];
+
+    let availableBooks = []; // Books not yet seen in the current cycle
+    let seenBooks = []; // Books already seen in the current cycle
 
     const fortuneCardWrapper = document.getElementById('fortuneCardWrapper');
     const fortuneCardFront = document.getElementById('fortuneCardFront');
     const fortuneCardBack = document.getElementById('fortuneCardBack');
-    const bookImage = document.getElementById('bookImage');
-    const bookTitle = document.getElementById('bookTitle');
-    const bookAuthor = document.getElementById('bookAuthor');
-    const bookDescription = document.getElementById('bookDescription');
 
-    let lastBookIndex = -1;
-    let isBookRevealed = false; // New state variable: true if book is showing, false if front card is showing
+    // Elements for the small card view
+    const smallBookImage = document.getElementById('smallBookImage');
+    const smallBookTitle = document.getElementById('smallBookTitle');
+    const smallBookAuthor = document.getElementById('smallBookAuthor');
+    const smallBookSign = document.getElementById('smallBookSign');
+
+    // Elements for the fullscreen overlay
+    const fullscreenOverlay = document.getElementById('fullscreenOverlay');
+    const fullscreenCardContent = document.getElementById('fullscreenCardContent');
+    const closeButton = document.getElementById('closeButton');
+    const fullscreenBookImage = document.getElementById('fullscreenBookImage');
+    const fullscreenBookTitle = document.getElementById('fullscreenBookTitle');
+    const fullscreenBookAuthor = document.getElementById('fullscreenBookAuthor');
+    const fullscreenBookBlurb = document.getElementById('fullscreenBookBlurb');
+    const fullscreenBookSign = document.getElementById('fullscreenBookSign');
+
+    let currentBook = null; // Stores the book currently being displayed
+
+    // Function to shuffle an array (Fisher-Yates algorithm)
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    // Initialize available books and preload images
+    function initializeBooks() {
+        availableBooks = shuffleArray([...allBooks]); // Start with a shuffled copy of all books
+        seenBooks = []; // Reset seen books
+        // Preload all book cover images
+        const imageUrls = allBooks.map(book => book.imageUrl);
+        preloadImages(imageUrls);
+    }
 
     // Function to preload images
     function preloadImages(imageUrls) {
@@ -342,76 +443,136 @@
         });
     }
 
-    fortuneCardWrapper.addEventListener('click', () => {
+    fortuneCardWrapper.addEventListener('click', handleCardClick);
+    closeButton.addEventListener('click', closeFullscreen);
+
+    function handleCardClick() {
         // Always trigger sparkle effect on click
         fortuneCardWrapper.classList.add('sparkle');
         setTimeout(() => {
             fortuneCardWrapper.classList.remove('sparkle');
         }, 700); // Match sparkle animation duration
 
-        if (isBookRevealed) {
-            // If a book is currently revealed, flip back to the front
+        if (fortuneCardWrapper.classList.contains('flipped')) {
+            // If card is currently flipped (showing book on back), flip it back to front
             fortuneCardWrapper.classList.remove('flipped');
             // Hide book details immediately for a clean transition
-            bookImage.classList.remove('show');
-            bookTitle.classList.remove('show');
-            bookAuthor.classList.remove('show');
-            bookDescription.classList.remove('show');
-            isBookRevealed = false;
+            hideBookDetails();
+            // After flipping back, the next click will reveal a new book
         } else {
-            // If front card is showing, reveal a new book
+            // If card is on front, reveal a new book
             revealNewBook();
         }
-    });
-
-    function revealNewBook() {
-        // Select a random book, ensuring it's not the same as the last one if possible
-        let randomIndex;
-        do {
-            randomIndex = Math.floor(Math.random() * books.length);
-        } while (books.length > 1 && randomIndex === lastBookIndex);
-        lastBookIndex = randomIndex;
-
-        const selectedBook = books[randomIndex];
-
-        // Update the content on the back of the card
-        bookImage.src = selectedBook.imageUrl;
-        bookTitle.textContent = selectedBook.title;
-        bookAuthor.textContent = `By ${selectedBook.author}`;
-        bookDescription.textContent = selectedBook.description;
-
-        // Trigger the flip to reveal the book
-        fortuneCardWrapper.classList.add('flipped');
-        isBookRevealed = true;
-
-        // Trigger the "pop out" animation for the book details after the flip completes
-        setTimeout(() => {
-            bookImage.classList.add('show');
-            bookTitle.classList.add('show');
-            bookAuthor.classList.add('show');
-            bookDescription.classList.add('show');
-        }, 300); // Half of the flip duration
     }
 
-    // Initial state: ensure card is not flipped and content is hidden
-    document.addEventListener('DOMContentLoaded', () => {
+    function revealNewBook() {
+        let selectedBook;
+
+        if (availableBooks.length === 0) {
+            // All books have been seen, display the "game over" card
+            selectedBook = {
+                title: "Oops! I have revealed too much.",
+                author: "",
+                blurb: "My mystical energies are depleted for now. The secrets of the cosmos must rest.",
+                sign: "Come back next month. Read… if you dare.",
+                imageUrl: "https://placehold.co/150x225/000000/FFFFFF?text=Zoltar+Resting" // Placeholder for end card
+            };
+            // Reset for next cycle if user wants to start over
+            setTimeout(() => {
+                initializeBooks();
+            }, 3000); // Reset after 3 seconds
+        } else {
+            // Get a random book from availableBooks
+            const randomIndex = Math.floor(Math.random() * availableBooks.length);
+            selectedBook = availableBooks[randomIndex];
+
+            // Move the selected book from available to seen
+            availableBooks.splice(randomIndex, 1);
+            seenBooks.push(selectedBook);
+        }
+
+        currentBook = selectedBook; // Store the current book
+
+        // Update the content on the back of the small card
+        smallBookImage.src = currentBook.imageUrl;
+        smallBookTitle.textContent = currentBook.title;
+        smallBookAuthor.textContent = `By ${currentBook.author}`;
+        smallBookSign.textContent = currentBook.sign;
+
+        // Trigger the flip to reveal the book on the small card
+        fortuneCardWrapper.classList.add('flipped');
+
+        // After the flip animation, transition to fullscreen
+        setTimeout(() => {
+            showFullscreenBook();
+        }, 600); // Match card flip duration
+    }
+
+    function showFullscreenBook() {
+        // Populate fullscreen content
+        fullscreenBookImage.src = currentBook.imageUrl;
+        fullscreenBookTitle.textContent = currentBook.title;
+        fullscreenBookAuthor.textContent = `By ${currentBook.author}`;
+        fullscreenBookBlurb.textContent = currentBook.blurb;
+        fullscreenBookSign.textContent = currentBook.sign;
+
+        // Activate fullscreen overlay
+        fullscreenOverlay.classList.add('active');
+
+        // Show details with pop-in animation after overlay is active
+        setTimeout(() => {
+            fullscreenBookImage.classList.add('show');
+            fullscreenBookTitle.classList.add('show');
+            fullscreenBookAuthor.classList.add('show');
+            fullscreenBookBlurb.classList.add('show');
+            fullscreenBookSign.classList.add('show');
+        }, 100); // Small delay after overlay active
+    }
+
+    function closeFullscreen() {
+        // Hide details with pop-out animation
+        hideFullscreenDetails();
+
+        // Deactivate fullscreen overlay after animation
+        setTimeout(() => {
+            fullscreenOverlay.classList.remove('active');
+        }, 500); // Match pop-out transition duration
+
+        // Flip the small card back to its front side
         fortuneCardWrapper.classList.remove('flipped');
-        isBookRevealed = false;
-        bookImage.classList.remove('show');
-        bookTitle.classList.remove('show');
-        bookAuthor.classList.remove('show');
-        bookDescription.classList.remove('show');
+        // Hide small card details immediately for a clean transition
+        hideBookDetails();
+    }
 
-        // Set a placeholder for the book image and text on initial load,
-        // even though it's hidden, to avoid empty alt text.
-        bookImage.src = "https://placehold.co/150x225/000000/FFFFFF?text=Book+Cover";
-        bookTitle.textContent = "Your Literary Journey Awaits...";
-        bookAuthor.textContent = "Click the card to discover your next read.";
-        bookDescription.textContent = "";
+    function hideBookDetails() {
+        smallBookImage.classList.remove('show');
+        smallBookTitle.classList.remove('show');
+        smallBookAuthor.classList.remove('show');
+        smallBookSign.classList.remove('show');
+    }
 
-        // Preload all book cover images
-        const imageUrls = books.map(book => book.imageUrl);
-        preloadImages(imageUrls);
+    function hideFullscreenDetails() {
+        fullscreenBookImage.classList.remove('show');
+        fullscreenBookTitle.classList.remove('show');
+        fullscreenBookAuthor.classList.remove('show');
+        fullscreenBookBlurb.classList.remove('show');
+        fullscreenBookSign.classList.remove('show');
+    }
+
+
+    // Initial setup
+    document.addEventListener('DOMContentLoaded', () => {
+        initializeBooks(); // Shuffle and preload on load
+        fortuneCardWrapper.classList.remove('flipped');
+        hideBookDetails(); // Ensure small card details are hidden
+        hideFullscreenDetails(); // Ensure fullscreen details are hidden
+        fullscreenOverlay.classList.remove('active'); // Ensure overlay is hidden
+
+        // Set initial placeholder for small card
+        smallBookImage.src = "https://placehold.co/150x225/000000/FFFFFF?text=Click+Card";
+        smallBookTitle.textContent = "Your Literary Journey Awaits...";
+        smallBookAuthor.textContent = "Click the card to discover your next read.";
+        smallBookSign.textContent = "";
     });
 
 </script>
