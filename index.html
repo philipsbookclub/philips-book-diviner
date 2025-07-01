@@ -226,7 +226,7 @@
             .fullscreen-top-row {
                 flex-direction: row; /* Place image and stats side-by-side */
                 justify-content: center; /* Center the row itself */
-                align-items: flex-start; /* Align contents to the top */
+                align-items: center; /* Align contents to the center vertically */
             }
             .fullscreen-image-area,
             .fullscreen-stats-area {
@@ -432,8 +432,8 @@
         }
 
         .author-photo {
-            width: 100px; /* Fixed size for author photo */
-            height: 100px;
+            width: 120px; /* Increased size for author photo */
+            height: 120px; /* Increased size for author photo */
             border-radius: 50%; /* Make it round */
             object-fit: cover; /* Ensure image covers the area */
             border: 3px solid #ffd700; /* Gold border */
@@ -501,8 +501,8 @@
                 font-size: 0.95rem;
             }
             .author-photo {
-                width: 80px;
-                height: 80px;
+                width: 100px; /* Adjusted size for author photo on medium screens */
+                height: 100px;
             }
         }
 
@@ -536,8 +536,8 @@
                 font-size: 0.85rem;
             }
             .author-photo {
-                width: 70px;
-                height: 70px;
+                width: 80px; /* Adjusted size for author photo on small screens */
+                height: 80px;
             }
         }
     </style>
@@ -545,7 +545,7 @@
 <body>
 <div class="zoltar-container">
     <div class="zoltar-header-image-container">
-        <img src="ShakespeareZoltar.jpg" alt="Philip's Book Diviner" class="zoltar-header-image">
+        <img src="NewShakespeare.png" alt="Philip's Book Diviner" class="zoltar-header-image">
     </div>
     <p class="text-gray-300 mb-6">Click the card to reveal your next literary adventure!</p>
 
@@ -624,11 +624,11 @@
             sign: "Observance: Learn how good storytelling can make even mundane topics shine.",
             imageUrl: "OrangesCover.jpg",
             quote: "Cold – coolness, rather – is what makes an orange orange. In some parts of the world, the weather never gets cold enough to change the colour; in Thailand, for example, an orange is a green fruit",
-            authorPhotoUrl: "JohnMcPheeAuthor.jpg", // Placeholder for John McPhee's photo
+            authorPhotoUrl: "JohnMcPheeAuthor.jpg", // Placeholder for John McPhee's photo, updated size
             stats: {
                 judgment: "The Unexpected Delight",
-                coreElements: "The Magic of the Mundane",
-                readabilityLength: "176 pages (Moderate)"
+                coreElements: "The Mundane Unveiled (Deep Dive into the Ordinary)",
+                readabilityLength: "The Measured Read (Moderate Engagement)"
             }
         }
         // Add more books here as you provide them
@@ -672,8 +672,8 @@
     const fullscreenBookTitle = document.getElementById('fullscreenBookTitle');
     const fullscreenBookAuthor = document.getElementById('fullscreenBookAuthor');
     const fullscreenBookBlurb = document.getElementById('fullscreenBookBlurb');
-    const fullscreenBookQuote = document.getElementById('fullscreenBookQuote'); // New element
-    const fullscreenAuthorPhoto = document.getElementById('fullscreenAuthorPhoto'); // New element
+    const fullscreenBookQuote = document.getElementById('fullscreenBookQuote');
+    const fullscreenAuthorPhoto = document.getElementById('fullscreenAuthorPhoto');
     const fullscreenBookSign = document.getElementById('fullscreenBookSign');
     const bookStatsContainer = document.getElementById('bookStatsContainer');
     const statJudgment = document.getElementById('statJudgment');
@@ -755,11 +755,7 @@
                 imageUrl: "Tired.jpg",
                 quote: "", // No quote for end card
                 authorPhotoUrl: "", // No author photo for end card
-                stats: { // Placeholder stats for the end card
-                    judgment: "The Great Silence",
-                    coreElements: "The Veil Descends (Secrets Unspoken)",
-                    readabilityLength: "The Endless Wait (Patience Required)"
-                }
+                stats: {} // No stats for end card
             };
             // Reset for next cycle if user wants to start over, but give time to read end message
             setTimeout(() => {
@@ -805,10 +801,21 @@
         fullscreenAuthorPhoto.src = currentBook.authorPhotoUrl;
         fullscreenAuthorPhoto.alt = currentBook.author ? `${currentBook.author} Photo` : "Author Photo"; // Alt text for accessibility
 
-        // Populate stats
-        statJudgment.textContent = currentBook.stats.judgment;
-        statCoreElements.textContent = currentBook.stats.coreElements;
-        statReadabilityLength.textContent = currentBook.stats.readabilityLength;
+        // Populate stats and conditionally show/hide elements
+        if (currentBook.stats && Object.keys(currentBook.stats).length > 0) {
+            statJudgment.textContent = currentBook.stats.judgment;
+            statCoreElements.textContent = currentBook.stats.coreElements;
+            statReadabilityLength.textContent = currentBook.stats.readabilityLength;
+            bookStatsContainer.classList.add('show');
+        } else {
+            bookStatsContainer.classList.remove('show');
+        }
+
+        if (currentBook.authorPhotoUrl) {
+            fullscreenAuthorPhoto.classList.add('show');
+        } else {
+            fullscreenAuthorPhoto.classList.remove('show');
+        }
 
         // Activate fullscreen overlay
         fullscreenOverlay.classList.add('active');
@@ -820,9 +827,7 @@
             fullscreenBookAuthor.classList.add('show');
             fullscreenBookBlurb.classList.add('show');
             fullscreenBookSign.classList.add('show');
-            bookStatsContainer.classList.add('show'); // Show stats container
             fullscreenBookQuote.classList.add('show'); // Show quote
-            fullscreenAuthorPhoto.classList.add('show'); // Show author photo
         }, 100); // Small delay after overlay active
     }
 
@@ -830,13 +835,13 @@
         // Hide details with pop-out animation
         hideFullscreenDetails();
 
-        // Deactivate fullscreen overlay after animation
-        setTimeout(() => {
-            fullscreenOverlay.classList.remove('active');
-        }, 500); // Match pop-out transition duration
+        // Deactivate fullscreen overlay immediately
+        fullscreenOverlay.classList.remove('active');
 
-        // The small card remains flipped to the back (showing the book)
-        // The next click on the small card will flip it back to the front.
+        // Flip the small card back to its front side immediately
+        fortuneCardWrapper.classList.remove('flipped');
+        // Hide small card details immediately for a clean transition
+        hideBookDetails();
     }
 
     function hideBookDetails() {
