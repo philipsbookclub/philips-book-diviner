@@ -41,7 +41,7 @@
         }
 
         .zoltar-header-image {
-            max-width: 30%;
+            max-width: 100%;
             height: auto;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
@@ -168,15 +168,15 @@
             color: #333;
             border-radius: 15px;
             padding: 2rem;
-            max-width: 800px; /* Max width for fullscreen card */
+            max-width: 900px; /* Increased max-width for two columns */
             width: 90%;
             max-height: 90vh; /* Max height for fullscreen card */
             overflow-y: auto; /* Enable scrolling for long content */
             position: relative;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            flex-direction: column; /* Stack top-row and bottom-content */
+            align-items: center; /* Center content horizontally */
             transform: scale(0.8); /* Initial state for pop-in */
             opacity: 0;
             transition: transform 0.5s ease-out, opacity 0.5s ease-out;
@@ -212,6 +212,38 @@
             color: #8b4513;
         }
 
+        /* New layout for fullscreen card content */
+        .fullscreen-top-row {
+            display: flex;
+            flex-direction: column; /* Stack image and stats on small screens */
+            align-items: center; /* Center items when stacked */
+            width: 100%;
+            margin-bottom: 1.5rem; /* Space between top and bottom content */
+            gap: 1.5rem; /* Space between image and stats when side-by-side */
+        }
+
+        @media (min-width: 768px) { /* On medium screens and up */
+            .fullscreen-top-row {
+                flex-direction: row; /* Place image and stats side-by-side */
+                justify-content: center; /* Center the row itself */
+                align-items: flex-start; /* Align contents to the top */
+            }
+            .fullscreen-image-area,
+            .fullscreen-stats-area {
+                flex: 1; /* Distribute space equally */
+                display: flex;
+                flex-direction: column;
+                align-items: center; /* Center content within each area */
+            }
+        }
+
+        .fullscreen-blurb-quote-sign-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center title, author, blurb, sign */
+        }
+
         .book-image {
             max-width: 200px; /* Larger for fullscreen */
             height: auto;
@@ -233,7 +265,8 @@
             font-weight: bold;
             color: #4a0e0e;
             margin-bottom: 0.75rem;
-            text-align: center;
+            text-align: center; /* Center in its column */
+            width: 100%; /* Take full width of its column */
             opacity: 0;
             transform: translateY(10px);
             transition: opacity 0.5s ease-out 0.1s, transform 0.5s ease-out 0.1s;
@@ -248,7 +281,8 @@
             font-size: 1.3rem; /* Larger for fullscreen */
             color: #8b4513;
             margin-bottom: 1rem;
-            text-align: center;
+            text-align: center; /* Center in its column */
+            width: 100%;
             opacity: 0;
             transform: translateY(10px);
             transition: opacity 0.5s ease-out 0.2s, transform 0.5s ease-out 0.2s;
@@ -280,7 +314,8 @@
             font-style: italic;
             font-weight: bold;
             color: #4a0e0e; /* Dark red for sign */
-            text-align: center;
+            text-align: center; /* Center in its column */
+            width: 100%;
             opacity: 0;
             transform: translateY(10px);
             transition: opacity 0.5s ease-out 0.4s, transform 0.5s ease-out 0.4s;
@@ -291,10 +326,153 @@
             transform: translateY(0);
         }
 
+        /* New styles for Tarot-style stats */
+        .book-stats-container {
+            width: 100%; /* Take full width of its column */
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            padding: 0.5rem 0;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.5s ease-out 0.5s, transform 0.5s ease-out 0.5s;
+        }
+
+        .book-stats-container.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start; /* Align stats to the left within their container */
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            color: #666;
+            text-align: left;
+        }
+
+        .stat-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .stat-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 0.5rem;
+            fill: #8b4513; /* Brownish color for icons */
+            flex-shrink: 0; /* Prevent icon from shrinking */
+        }
+
+        .stat-text {
+            font-weight: 600;
+            color: #4a0e0e; /* Dark red for stat names */
+            white-space: nowrap; /* Prevent text from wrapping */
+        }
+
+        .stat-description {
+            font-style: italic;
+            color: #555;
+            margin-left: 0.3rem;
+            flex-grow: 1; /* Allow description to take up remaining space */
+        }
+
+        /* Quote and Author Photo Section */
+        .fullscreen-quote-author-row {
+            display: flex;
+            flex-direction: column; /* Stack on small screens */
+            align-items: center; /* Center items when stacked */
+            width: 100%;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            gap: 1rem; /* Space between quote and photo when stacked */
+        }
+
+        @media (min-width: 640px) { /* Adjust breakpoint as needed */
+            .fullscreen-quote-author-row {
+                flex-direction: row; /* Side-by-side on larger screens */
+                justify-content: center; /* Center the row itself */
+                align-items: flex-start; /* Align contents to the top */
+                text-align: left; /* Ensure text alignment for quote */
+            }
+            .quote-column {
+                flex: 1; /* Take up space */
+                display: flex;
+                flex-direction: column;
+                justify-content: center; /* Center quote vertically */
+                align-items: center; /* Center quote horizontally */
+                padding-right: 1rem; /* Space between quote and photo */
+            }
+            .author-photo-column {
+                flex: 0 0 auto; /* Don't grow/shrink, size by content */
+                display: flex;
+                justify-content: center; /* Center photo horizontally */
+                align-items: center; /* Center photo vertically */
+                padding-left: 1rem; /* Space between quote and photo */
+            }
+        }
+
+        .book-quote {
+            font-size: 1.05rem;
+            font-style: italic;
+            color: #8b4513; /* A warm brown/gold color */
+            text-align: left; /* Centered left as requested */
+            line-height: 1.5;
+            padding: 0 1rem; /* Add some padding */
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.5s ease-out 0.45s, transform 0.5s ease-out 0.45s;
+        }
+
+        .book-quote.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .author-photo {
+            width: 100px; /* Fixed size for author photo */
+            height: 100px;
+            border-radius: 50%; /* Make it round */
+            object-fit: cover; /* Ensure image covers the area */
+            border: 3px solid #ffd700; /* Gold border */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 0.5s ease-out 0.5s, transform 0.5s ease-out 0.5s;
+        }
+
+        .author-photo.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+
         /* Responsive adjustments for fullscreen */
         @media (max-width: 768px) {
             .fullscreen-card-content {
+                flex-direction: column; /* Stack columns vertically on smaller screens */
+                gap: 1.5rem;
                 padding: 1.5rem;
+            }
+            .fullscreen-image-area,
+            .fullscreen-stats-area {
+                flex: none; /* Remove flex:1 on small screens */
+                width: 100%; /* Take full width when stacked */
+            }
+            .fullscreen-top-row {
+                flex-direction: column; /* Stack image and stats on small screens */
+                gap: 1rem;
+            }
+            .fullscreen-image-area {
+                padding-right: 0;
+            }
+            .fullscreen-stats-area {
+                align-items: center; /* Center stats when stacked */
+            }
+            .fullscreen-blurb-quote-sign-content {
+                align-items: center; /* Center text when stacked */
             }
             .book-image {
                 max-width: 150px;
@@ -310,6 +488,21 @@
             }
             .book-sign {
                 font-size: 1rem;
+            }
+            .stat-item {
+                font-size: 0.85rem;
+                justify-content: center; /* Center stats when stacked */
+            }
+            .stat-icon {
+                width: 18px;
+                height: 18px;
+            }
+            .book-quote {
+                font-size: 0.95rem;
+            }
+            .author-photo {
+                width: 80px;
+                height: 80px;
             }
         }
 
@@ -332,13 +525,27 @@
             .book-sign {
                 font-size: 0.9rem;
             }
+            .stat-item {
+                font-size: 0.8rem;
+            }
+            .stat-icon {
+                width: 16px;
+                height: 16px;
+            }
+            .book-quote {
+                font-size: 0.85rem;
+            }
+            .author-photo {
+                width: 70px;
+                height: 70px;
+            }
         }
     </style>
 </head>
 <body>
 <div class="zoltar-container">
     <div class="zoltar-header-image-container">
-        <img src="Gemini_Generated_Image_5xddfz5xddfz5xdd.pn" alt="Philip's Book Diviner" class="zoltar-header-image">
+        <img src="ShakespeareZoltar.jpg" alt="Philip's Book Diviner" class="zoltar-header-image">
     </div>
     <p class="text-gray-300 mb-6">Click the card to reveal your next literary adventure!</p>
 
@@ -350,9 +557,9 @@
         <div id="fortuneCardBack" class="fortune-card-face fortune-card-back">
             <!-- Book content will be dynamically loaded here for the small card view -->
             <img id="smallBookImage" class="book-image" src="" alt="Book Cover">
-            <p id="smallBookTitle" class="book-title font-bold"></p>
+            <p id="smallBookTitle" class="book-title"></p>
             <p id="smallBookAuthor" class="book-author"></p>
-            <p id="smallBookSign" class="book-sign italic font-bold"></p>
+            <p id="smallBookSign" class="book-sign"></p>
         </div>
     </div>
 </div>
@@ -361,11 +568,49 @@
 <div id="fullscreenOverlay" class="fullscreen-overlay">
     <div class="fullscreen-card-content">
         <button id="closeButton" class="close-button">X</button>
-        <img id="fullscreenBookImage" class="book-image" src="" alt="Book Cover">
-        <p id="fullscreenBookTitle" class="book-title font-bold"></p>
-        <p id="fullscreenBookAuthor" class="book-author"></p>
-        <p id="fullscreenBookBlurb" class="book-blurb"></p>
-        <p id="fullscreenBookSign" class="book-sign italic font-bold"></p>
+
+        <div class="fullscreen-top-row">
+            <div class="fullscreen-image-area">
+                <img id="fullscreenBookImage" class="book-image" src="" alt="Book Cover">
+            </div>
+            <div class="fullscreen-stats-area">
+                <div id="bookStatsContainer" class="book-stats-container">
+                    <div class="stat-item">
+                        <!-- Icon for Judgment (Eye) -->
+                        <svg class="stat-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                        <span class="stat-text">Judgment:</span> <span id="statJudgment" class="stat-description"></span>
+                    </div>
+                    <div class="stat-item">
+                        <!-- Icon for Core Elements (Heart) -->
+                        <svg class="stat-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                        <span class="stat-text">Core Elements:</span> <span id="statCoreElements" class="stat-description"></span>
+                    </div>
+                    <div class="stat-item">
+                        <!-- Icon for Readability/Length (Clock) -->
+                        <svg class="stat-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7zm-.5-13h-1v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                        <span class="stat-text">Readability/Length:</span> <span id="statReadabilityLength" class="stat-description"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="fullscreen-blurb-quote-sign-content">
+            <p id="fullscreenBookTitle" class="book-title"></p>
+            <p id="fullscreenBookAuthor" class="book-author"></p>
+            <p id="fullscreenBookBlurb" class="book-blurb"></p>
+
+            <!-- New section for Quote and Author Photo -->
+            <div class="fullscreen-quote-author-row">
+                <div class="quote-column">
+                    <p id="fullscreenBookQuote" class="book-quote"></p>
+                </div>
+                <div class="author-photo-column">
+                    <img id="fullscreenAuthorPhoto" class="author-photo" src="" alt="Author Photo">
+                </div>
+            </div>
+
+            <p id="fullscreenBookSign" class="book-sign"></p>
+        </div>
     </div>
 </div>
 
@@ -376,8 +621,15 @@
             title: "Oranges",
             author: "John McPhee",
             blurb: "I know, seriously, a book on oranges? But it’s incredibly written. John McPhee, 94, is the godfather of the Princeton journalism department. I helped him up the stairs once and I haven’t washed that arm since (just kidding…).",
-            sign: "Sign: Learn how good storytelling can make even mundane topics shine.",
-            imageUrl: "71bxytN5LoL._UF1000,1000_QL80_.jpg"
+            sign: "Observance: Learn how good storytelling can make even mundane topics shine.",
+            imageUrl: "OrangesCover.jpg",
+            quote: "Cold – coolness, rather – is what makes an orange orange. In some parts of the world, the weather never gets cold enough to change the colour; in Thailand, for example, an orange is a green fruit",
+            authorPhotoUrl: "JohnMcPheeAuthor.jpg", // Placeholder for John McPhee's photo
+            stats: {
+                judgment: "The Unexpected Delight",
+                coreElements: "The Magic of the Mundane",
+                readabilityLength: "176 pages (Moderate)"
+            }
         }
         // Add more books here as you provide them
         /*
@@ -387,7 +639,14 @@
             author: "Another Author",
             blurb: "This is a blurb for another book.",
             sign: "This is another sign.",
-            imageUrl: "URL_TO_ANOTHER_BOOK_COVER"
+            imageUrl: "URL_TO_ANOTHER_BOOK_COVER",
+            quote: "A relevant quote from the book or author.",
+            authorPhotoUrl: "URL_TO_AUTHOR_PHOTO",
+            stats: {
+                judgment: "The Thrill-Seeker",
+                coreElements: "The World-Weaver (Expansive Lore)",
+                readabilityLength: "The Swift Current (Quick, Engaging)"
+            }
         }
         */
     ];
@@ -413,7 +672,14 @@
     const fullscreenBookTitle = document.getElementById('fullscreenBookTitle');
     const fullscreenBookAuthor = document.getElementById('fullscreenBookAuthor');
     const fullscreenBookBlurb = document.getElementById('fullscreenBookBlurb');
+    const fullscreenBookQuote = document.getElementById('fullscreenBookQuote'); // New element
+    const fullscreenAuthorPhoto = document.getElementById('fullscreenAuthorPhoto'); // New element
     const fullscreenBookSign = document.getElementById('fullscreenBookSign');
+    const bookStatsContainer = document.getElementById('bookStatsContainer');
+    const statJudgment = document.getElementById('statJudgment');
+    const statCoreElements = document.getElementById('statCoreElements');
+    const statReadabilityLength = document.getElementById('statReadabilityLength');
+
 
     let currentBook = null; // Stores the book currently being displayed
 
@@ -430,9 +696,14 @@
     function initializeBooks() {
         availableBooks = shuffleArray([...allBooks]); // Start with a shuffled copy of all books
         seenBooks = []; // Reset seen books
-        // Preload all book cover images
-        const imageUrls = allBooks.map(book => book.imageUrl);
-        preloadImages(imageUrls);
+        // Preload all book cover images and author photos
+        const imageUrlsToPreload = allBooks.map(book => book.imageUrl);
+        allBooks.forEach(book => {
+            if (book.authorPhotoUrl) {
+                imageUrlsToPreload.push(book.authorPhotoUrl);
+            }
+        });
+        preloadImages(imageUrlsToPreload);
     }
 
     // Function to preload images
@@ -453,12 +724,17 @@
             fortuneCardWrapper.classList.remove('sparkle');
         }, 700); // Match sparkle animation duration
 
+        if (fullscreenOverlay.classList.contains('active')) {
+            // If fullscreen is active, clicking the card does nothing (only 'X' closes it)
+            return;
+        }
+
         if (fortuneCardWrapper.classList.contains('flipped')) {
             // If card is currently flipped (showing book on back), flip it back to front
             fortuneCardWrapper.classList.remove('flipped');
             // Hide book details immediately for a clean transition
             hideBookDetails();
-            // After flipping back, the next click will reveal a new book
+            // No new book yet, wait for next click
         } else {
             // If card is on front, reveal a new book
             revealNewBook();
@@ -472,15 +748,23 @@
             // All books have been seen, display the "game over" card
             selectedBook = {
                 title: "Oops! I have revealed too much.",
-                author: "",
+                author: "", // No author for this card
                 blurb: "My mystical energies are depleted for now. The secrets of the cosmos must rest.",
                 sign: "Come back next month. Read… if you dare.",
-                imageUrl: "https://placehold.co/150x225/000000/FFFFFF?text=Zoltar+Resting" // Placeholder for end card
+                // Placeholder for the "man sleeping and tired" image
+                imageUrl: "Tired.jpg",
+                quote: "", // No quote for end card
+                authorPhotoUrl: "", // No author photo for end card
+                stats: { // Placeholder stats for the end card
+                    judgment: "The Great Silence",
+                    coreElements: "The Veil Descends (Secrets Unspoken)",
+                    readabilityLength: "The Endless Wait (Patience Required)"
+                }
             };
-            // Reset for next cycle if user wants to start over
+            // Reset for next cycle if user wants to start over, but give time to read end message
             setTimeout(() => {
                 initializeBooks();
-            }, 3000); // Reset after 3 seconds
+            }, 5000); // Reset after 5 seconds
         } else {
             // Get a random book from availableBooks
             const randomIndex = Math.floor(Math.random() * availableBooks.length);
@@ -493,11 +777,11 @@
 
         currentBook = selectedBook; // Store the current book
 
-        // Update the content on the back of the small card
+        // Update the content on the back of the small card (only image, title, author, sign)
         smallBookImage.src = currentBook.imageUrl;
-        smallBookTitle.textContent = currentBook.title;
-        smallBookAuthor.textContent = `By ${currentBook.author}`;
-        smallBookSign.textContent = currentBook.sign;
+        smallBookTitle.innerHTML = `<b>${currentBook.title}</b>`; // Bold title
+        smallBookAuthor.textContent = currentBook.author; // Removed "By"
+        smallBookSign.innerHTML = `<b><i>${currentBook.sign}</i></b>`; // Bold and italic sign
 
         // Trigger the flip to reveal the book on the small card
         fortuneCardWrapper.classList.add('flipped');
@@ -511,10 +795,20 @@
     function showFullscreenBook() {
         // Populate fullscreen content
         fullscreenBookImage.src = currentBook.imageUrl;
-        fullscreenBookTitle.textContent = currentBook.title;
-        fullscreenBookAuthor.textContent = `By ${currentBook.author}`;
+        fullscreenBookTitle.innerHTML = `<b>${currentBook.title}</b>`; // Bold title
+        fullscreenBookAuthor.textContent = currentBook.author; // Removed "By"
         fullscreenBookBlurb.textContent = currentBook.blurb;
-        fullscreenBookSign.textContent = currentBook.sign;
+        fullscreenBookSign.innerHTML = `<b><i>${currentBook.sign}</i></b>`; // Bold and italic sign
+
+        // Populate quote and author photo
+        fullscreenBookQuote.textContent = currentBook.quote;
+        fullscreenAuthorPhoto.src = currentBook.authorPhotoUrl;
+        fullscreenAuthorPhoto.alt = currentBook.author ? `${currentBook.author} Photo` : "Author Photo"; // Alt text for accessibility
+
+        // Populate stats
+        statJudgment.textContent = currentBook.stats.judgment;
+        statCoreElements.textContent = currentBook.stats.coreElements;
+        statReadabilityLength.textContent = currentBook.stats.readabilityLength;
 
         // Activate fullscreen overlay
         fullscreenOverlay.classList.add('active');
@@ -526,6 +820,9 @@
             fullscreenBookAuthor.classList.add('show');
             fullscreenBookBlurb.classList.add('show');
             fullscreenBookSign.classList.add('show');
+            bookStatsContainer.classList.add('show'); // Show stats container
+            fullscreenBookQuote.classList.add('show'); // Show quote
+            fullscreenAuthorPhoto.classList.add('show'); // Show author photo
         }, 100); // Small delay after overlay active
     }
 
@@ -538,10 +835,8 @@
             fullscreenOverlay.classList.remove('active');
         }, 500); // Match pop-out transition duration
 
-        // Flip the small card back to its front side
-        fortuneCardWrapper.classList.remove('flipped');
-        // Hide small card details immediately for a clean transition
-        hideBookDetails();
+        // The small card remains flipped to the back (showing the book)
+        // The next click on the small card will flip it back to the front.
     }
 
     function hideBookDetails() {
@@ -557,6 +852,9 @@
         fullscreenBookAuthor.classList.remove('show');
         fullscreenBookBlurb.classList.remove('show');
         fullscreenBookSign.classList.remove('show');
+        bookStatsContainer.classList.remove('show'); // Hide stats container
+        fullscreenBookQuote.classList.remove('show'); // Hide quote
+        fullscreenAuthorPhoto.classList.remove('show'); // Hide author photo
     }
 
 
