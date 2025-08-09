@@ -7,43 +7,19 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Creepster&family=Metal+Mania&display=swap" rel="stylesheet">
- /* Reading link button */
-.reading-link-container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-top: 0.75rem;
-}
 
-.reading-link-btn {
-  display: none; /* hidden by default until JS populates it */
-  padding: 10px 16px;
-  background-color: #8b4513;            /* matches your wood tone */
-  color: #ffd700;                        /* gold text */
-  border: 2px solid #ffd700;             /* gold border */
-  border-radius: 10px;
-  font-weight: 700;
-  text-decoration: none;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-  transition: background 0.2s, color 0.2s, transform 0.05s ease-in-out;
-}
-
-.reading-link-btn:active {
-  transform: translateY(1px);
-}
-
-.reading-link-btn:hover {
-  background-color: #ffd700;
-  color: #8b4513;
-}
-
-@media (max-width: 480px) {
-  .reading-link-btn {
-    width: 100%;
-    text-align: center;
-  }
-}
-
+  
+  <head>
+  <style>
+    /* Reading link button */
+    .reading-link-container { width: 100%; display: flex; justify-content: center; margin-top: .75rem; }
+    .reading-link-btn { display: none; padding: 10px 16px; background-color: #8b4513; color: #ffd700; border: 2px solid #ffd700; border-radius: 10px; font-weight: 700; text-decoration: none; box-shadow: 0 2px 6px rgba(0,0,0,.25); transition: background .2s, color .2s, transform .05s ease-in-out; }
+    .reading-link-btn:active { transform: translateY(1px); }
+    .reading-link-btn:hover { background-color: #ffd700; color: #8b4513; }
+    @media (max-width: 480px) { .reading-link-btn { width: 100%; text-align: center; } }
+  </style>
+</head>
+  
   <style>
     /* Custom styles for Zoltar theme */
     body {
