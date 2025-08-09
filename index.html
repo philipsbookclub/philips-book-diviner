@@ -98,7 +98,35 @@
         padding: 1rem; /* Adjust padding for content */
         overflow: hidden; /* Hide overflowing book during animation */
     }
-    /* Use the “small viewport” unit to avoid mobile browser UI jumps */
+
+
+    .fortune-card-text {
+        font-family: 'Metal Mania', cursive; /* Mystical text font */
+        color: #ffd700;
+        font-size: 1.8rem;
+        text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+        text-align: center;
+    }
+
+    /* Mystical Sparkle Effect */
+    .fortune-card-wrapper::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        /* Use transform: scale for animation instead of width/height */
+        background: radial-gradient(circle at center, #ffd700 0%, transparent 70%);
+        border-radius: 50%;
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0);
+        z-index: 3; /* Above the card faces */
+        pointer-events: none; /* Allow clicks to pass through */
+    }
+
+    .fortune-card-wrapper.sparkle::before {
+        animation: sparkle-burst 0.7s ease-out forwards;
+    }
+     /* Use the “small viewport” unit to avoid mobile browser UI jumps */
 html, body { height: 100svh; overflow: hidden; }
 
 /* We’ll scale these to fit; keep transforms additive and stable */
@@ -184,34 +212,6 @@ closeFullscreen = function () {
   // Refit main machine after overlay closes
   setTimeout(refitAll, 60);
 };
-
-
-    .fortune-card-text {
-        font-family: 'Metal Mania', cursive; /* Mystical text font */
-        color: #ffd700;
-        font-size: 1.8rem;
-        text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
-        text-align: center;
-    }
-
-    /* Mystical Sparkle Effect */
-    .fortune-card-wrapper::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        /* Use transform: scale for animation instead of width/height */
-        background: radial-gradient(circle at center, #ffd700 0%, transparent 70%);
-        border-radius: 50%;
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(0);
-        z-index: 3; /* Above the card faces */
-        pointer-events: none; /* Allow clicks to pass through */
-    }
-
-    .fortune-card-wrapper.sparkle::before {
-        animation: sparkle-burst 0.7s ease-out forwards;
-    }
 
     @keyframes sparkle-burst {
         0% {
