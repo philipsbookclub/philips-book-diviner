@@ -7,6 +7,43 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Creepster&family=Metal+Mania&display=swap" rel="stylesheet">
+ /* Reading link button */
+.reading-link-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 0.75rem;
+}
+
+.reading-link-btn {
+  display: none; /* hidden by default until JS populates it */
+  padding: 10px 16px;
+  background-color: #8b4513;            /* matches your wood tone */
+  color: #ffd700;                        /* gold text */
+  border: 2px solid #ffd700;             /* gold border */
+  border-radius: 10px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  transition: background 0.2s, color 0.2s, transform 0.05s ease-in-out;
+}
+
+.reading-link-btn:active {
+  transform: translateY(1px);
+}
+
+.reading-link-btn:hover {
+  background-color: #ffd700;
+  color: #8b4513;
+}
+
+@media (max-width: 480px) {
+  .reading-link-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
   <style>
     /* Custom styles for Zoltar theme */
     body {
@@ -149,6 +186,7 @@ html, body { height: 100svh; overflow: hidden; }
   max-height: unset;           /* we handle fit by scaling, not by scrolling */
   transform: scale(0.8) scale(var(--fit-scale));
 }
+
 .fullscreen-overlay.active .fullscreen-card-content {
   transform: scale(1) scale(var(--fit-scale));
 }
@@ -698,6 +736,17 @@ closeFullscreen = function () {
       </div>
 
       <p id="fullscreenBookSign" class="book-sign"></p>
+      <!-- Reading Link Button -->
+<div class="reading-link-container">
+  <a
+    id="readingLinkBtn"
+    class="reading-link-btn"
+    href="#"
+    target="_blank"
+    rel="noopener noreferrer"
+  ></a>
+</div>
+
     </div>
   </div>
 </div>
@@ -713,7 +762,8 @@ closeFullscreen = function () {
     imageUrl: "caesar.jpg", // <-- REPLACE
     quote: "“Cry ‘Havoc!’ and let slip the dogs of war, / That this foul deed shall smell above the earth / With carrion men groaning for burial.”\n\n“Men at some time are masters of their fates. / The fault, dear Brutus, is not in our stars, / But in ourselves, that we are underlings.”",
     authorPhotoUrl: "images.jpg", // <-- REPLACE
-    readingLink: "", // <-- ADD LINK HERE
+    readingLink: "https://drive.google.com/file/d/1F2FvuCz1RcBemkdXw-rpjanVFr6nxJq8/view?usp=drive_link",     // <-- your real PDF (or any URL)
+    readingLabel: "Read Here!"                        // <-- what users see on the button
     stats: {
       judgment: "The Knife",
       coreElements: "Power, Persuasion, Public Theater",
@@ -728,7 +778,9 @@ closeFullscreen = function () {
     imageUrl: "theeconomicnaturalist.jpg", // <-- REPLACE
     quote: "“ATM producers have to make keypads with Braille dots for their walk-up machines anyway, and so it is cheaper to make all machines the same way. The alternative would be to hold two separate inventories and make sure that each machine went to the right destination. If the Braille dots caused trouble for sighted users, the extra expense might be justified. But they do not.”",
     authorPhotoUrl: "robertfrank.jpg", // <-- REPLACE
-    readingLink: "", // <-- ADD LINK HERE
+    readingLink: "https://drive.google.com/file/d/1egpcERtuAAxfHD4l76Qxts2vAzx7VD0R/view?usp=drive_link",     // <-- your real PDF (or any URL)
+    readingLabel: "Read Here!"                        // <-- what users see on the button
+    stats: {
     stats: {
       judgment: "Hidden Logic",
       coreElements: "Curiosity, Rationality, Human Behavior",
@@ -743,7 +795,8 @@ closeFullscreen = function () {
     imageUrl: "stevejobs.jpg", // <-- REPLACE
     quote: "“Xerox created this perfect environment... It was heaven. But heaven is not a good place to commercialize a product.”",
     authorPhotoUrl: "malcolmgladwell.jpg", // <-- REPLACE
-    readingLink: "", // <-- ADD LINK HERE
+    readingLink: "https://drive.google.com/file/d/1rxqBqON55kjjI9e0DpXeLwTZRtbdK3I1/view?usp=drive_link",     // <-- your real PDF (or any URL)
+    readingLabel: "Read Here!"                        // <-- what users see on the button
     stats: {
       judgment: "The Fox and the Henhouse",
       coreElements: "Creativity, Technology, Culture",
@@ -758,7 +811,8 @@ closeFullscreen = function () {
     imageUrl: "doesithelptoknowhistory.jpg", // <-- REPLACE
     quote: "“What history generally ‘teaches’ is how hard it is for anyone to control it, including the people who think they're making it.”",
     authorPhotoUrl: "AdamGopnik.jpg", // <-- REPLACE
-    readingLink: "", // <-- ADD LINK HERE
+    readingLink: "https://drive.google.com/file/d/1APBevSxmLGmVVSd1dirDsnwoR6nD6EDj/view?usp=drive_link",     // <-- your real PDF (or any URL)
+    readingLabel: "Read Here!"                        // <-- what users see on the button
     stats: {
       judgment: "History is a Compass, Not a Crystal Ball",
       coreElements: "Context, Caution, Perspective",
