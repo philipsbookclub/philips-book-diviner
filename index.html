@@ -98,6 +98,93 @@
         padding: 1rem; /* Adjust padding for content */
         overflow: hidden; /* Hide overflowing book during animation */
     }
+    /* Use the “small viewport” unit to avoid mobile browser UI jumps */
+html, body { height: 100svh; overflow: hidden; }
+
+/* We’ll scale these to fit; keep transforms additive and stable */
+.zoltar-container {
+  transform-origin: center center;
+  /* allow an extra scaling factor (set via JS) */
+  --fit-scale: 1;
+  transform: scale(var(--fit-scale));
+  max-height: calc(100svh - 16px);
+}
+
+/* Don’t allow the overlay itself to scroll */
+.fullscreen-overlay { overflow: hidden; }
+
+/* Make fullscreen content transform composable: animation scale × fit scale */
+.fullscreen-card-content {
+  /* your animation's base scale (pop-in) */
+  --fit-scale: 1;              /* extra scale we set via JS */
+  transform-origin: top center;
+  max-height: unset;           /* we handle fit by scaling, not by scrolling */
+  transform: scale(0.8) scale(var(--fit-scale));
+}
+.fullscreen-overlay.active .fullscreen-card-content {
+  transform: scale(1) scale(var(--fit-scale));
+}
+// --- Viewport fit helpers (no scrolling, auto-scale) ---
+const zoltarContainer = document.querySelector('.zoltar-container');
+const fullscreenCardContentEl = document.getElementById('fullscreenCardContent');
+
+/**
+ * Compute a scale that lets element fit within the viewport with a small margin.
+ * Applies scaling via CSS variable --fit-scale so it composes with your existing transforms.
+ */
+function scaleElementToViewport(el, margin = 12) {
+  if (!el) return;
+
+  // Temporarily set fit-scale=1 to measure the element at its natural size
+  el.style.setProperty('--fit-scale', 1);
+
+  // Let layout settle before measuring
+  const rect = el.getBoundingClientRect();
+  const availW = Math.max(0, window.innerWidth  - margin * 2);
+  const availH = Math.max(0, window.innerHeight - margin * 2);
+
+  // Guard against zero sizes
+  const baseW = Math.max(1, rect.width);
+  const baseH = Math.max(1, rect.height);
+
+  const scale = Math.min(availW / baseW, availH / baseH, 1);
+
+  el.style.setProperty('--fit-scale', scale);
+}
+
+/** Re-fit both main machine and (if open) the fullscreen card */
+function refitAll() {
+  scaleElementToViewport(zoltarContainer);
+
+  if (fullscreenOverlay.classList.contains('active')) {
+    // Slightly larger margin so close button has breathing room
+    scaleElementToViewport(fullscreenCardContentEl, 16);
+  }
+}
+
+window.addEventListener('resize', refitAll);
+window.addEventListener('orientationchange', refitAll);
+
+// After animations mount, measure & fit
+const fitAfterFrame = () => requestAnimationFrame(() => requestAnimationFrame(refitAll));
+
+// Hook fits into your lifecycle
+document.addEventListener('DOMContentLoaded', fitAfterFrame);
+
+const _showFullscreenBook = showFullscreenBook;
+showFullscreenBook = function () {
+  _showFullscreenBook();
+  // Give the overlay a tick to apply .active and transitions
+  setTimeout(refitAll, 60);
+};
+
+const _closeFullscreen = closeFullscreen;
+closeFullscreen = function () {
+  _closeFullscreen();
+  // Refit main machine after overlay closes
+  setTimeout(refitAll, 60);
+};
+
 
     .fortune-card-text {
         font-family: 'Metal Mania', cursive; /* Mystical text font */
@@ -567,7 +654,7 @@
 
 <!-- Fullscreen Overlay for Book Details -->
 <div id="fullscreenOverlay" class="fullscreen-overlay">
-  <div class="fullscreen-card-content">
+  <div id="fullscreenCardContent" class="fullscreen-card-content">
     <button id="closeButton" class="close-button">X</button>
 
     <div class="fullscreen-top-row">
@@ -617,7 +704,7 @@
 
 <script>
   // Array of book recommendations
-  const allBooks = [
+ const allBooks = [
   {
     title: "The Tragedy of Julius Caesar",
     author: "William Shakespeare",
@@ -626,6 +713,7 @@
     imageUrl: "caesar.jpg", // <-- REPLACE
     quote: "“Cry ‘Havoc!’ and let slip the dogs of war, / That this foul deed shall smell above the earth / With carrion men groaning for burial.”\n\n“Men at some time are masters of their fates. / The fault, dear Brutus, is not in our stars, / But in ourselves, that we are underlings.”",
     authorPhotoUrl: "images.jpg", // <-- REPLACE
+    readingLink: "", // <-- ADD LINK HERE
     stats: {
       judgment: "The Knife",
       coreElements: "Power, Persuasion, Public Theater",
@@ -640,6 +728,7 @@
     imageUrl: "theeconomicnaturalist.jpg", // <-- REPLACE
     quote: "“ATM producers have to make keypads with Braille dots for their walk-up machines anyway, and so it is cheaper to make all machines the same way. The alternative would be to hold two separate inventories and make sure that each machine went to the right destination. If the Braille dots caused trouble for sighted users, the extra expense might be justified. But they do not.”",
     authorPhotoUrl: "robertfrank.jpg", // <-- REPLACE
+    readingLink: "", // <-- ADD LINK HERE
     stats: {
       judgment: "Hidden Logic",
       coreElements: "Curiosity, Rationality, Human Behavior",
@@ -654,6 +743,7 @@
     imageUrl: "stevejobs.jpg", // <-- REPLACE
     quote: "“Xerox created this perfect environment... It was heaven. But heaven is not a good place to commercialize a product.”",
     authorPhotoUrl: "malcolmgladwell.jpg", // <-- REPLACE
+    readingLink: "", // <-- ADD LINK HERE
     stats: {
       judgment: "The Fox and the Henhouse",
       coreElements: "Creativity, Technology, Culture",
@@ -668,6 +758,7 @@
     imageUrl: "doesithelptoknowhistory.jpg", // <-- REPLACE
     quote: "“What history generally ‘teaches’ is how hard it is for anyone to control it, including the people who think they're making it.”",
     authorPhotoUrl: "AdamGopnik.jpg", // <-- REPLACE
+    readingLink: "", // <-- ADD LINK HERE
     stats: {
       judgment: "History is a Compass, Not a Crystal Ball",
       coreElements: "Context, Caution, Perspective",
