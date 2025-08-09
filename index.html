@@ -618,83 +618,64 @@
 <script>
   // Array of book recommendations
   const allBooks = [
-      {
-          title: "Oranges",
-          author: "John McPhee",
-          blurb: "I know, seriously, a book on oranges? But it’s incredibly written. John McPhee, 94, is the godfather of the Princeton journalism department. I helped him up the stairs once and I haven’t washed that arm since (just kidding…).",
-          sign: "Observance: Learn how good storytelling can make even mundane topics shine.",
-          imageUrl: "OrangesCover.jpg",
-          quote: "Cold – coolness, rather – is what makes an orange orange. In some parts of the world, the weather never gets cold enough to change the colour; in Thailand, for example, an orange is a green fruit.",
-          authorPhotoUrl: "JohnMcPheeAuthor.jpg", // Placeholder for John McPhee's photo, updated size
-          stats: {
-              judgment: "The Unexpected Delight",
-              coreElements: "The Mundane Unveiled (Deep Dive into the Ordinary)",
-              readabilityLength: "The Measured Read (Moderate Engagement)"
-          }
-      }
-      // Add more books here as you provide them
-      ,
-      {
-          title: "Winning Ugly",
-          author: "Brad Gilbert",
-          blurb: "I think this is a must-read for anyone who likes to win. Winning ugly is about winning with your worst performance – about leveraging your strengths, exploiting weaknesses, and finding a way to push through, even when it's not glamorous. It’s all mental, bro.",
-          sign: "Observance: Victory isn't always about beauty.",
-          imageUrl: "81VpqyLGpGL.jpg", // <-- REMEMBER TO REPLACE THIS
-          quote: "“It became obvious to me that for the best players in the world their match had begun a long time before the first serve. They came ready to play and wanted to grab me by the throat as soon as they could.”",
-          authorPhotoUrl: "Brad-Gilbert-Picture-2-e1567220094722.jpg", // <-- REMEMBER TO REPLACE THIS
-          stats: {
-              judgment: "The Pragmatic Strategist",
-              coreElements: "The Mental Arena (Psychological Warfare, Tactics)",
-              readabilityLength: "The Direct Serve (Punchy, Actionable Advice)"
-          }
-      }
-      ,
-          {
-    title: "The Old Man and the Sea",
-    author: "Ernest Hemingway",
-    blurb: "When I first read this in ninth-grade, I thought the plot was so boring. When I reread it last month, I felt a deep rumbling and tugging in my stomach as the coarse rope pulled against the old fisherman’s blisters. Enjoy the journey, not the destination for this piece on, you guessed it: an old man, and the sea.",
-    sign: "Observance: What is so kind can be so unfeeling, and so we live for tomorrow.",
-    imageUrl: "Oldmansea.jpg", // <-- REMEMBER TO REPLACE THIS
-    quote: "“Why did they make birds so delicate and fine as those sea swallows when the ocean can be so cruel? She is kind and very beautiful. But she can be so cruel and it comes so suddenly and such birds that fly, dipping and hunting, with their small sad voices are made too delicately for the sea.”",
-    authorPhotoUrl: "Yousuf-Karsh-Ernest-Hemingway-1957-1558x1960.jpg", // <-- REMEMBER TO REPLACE THIS
-    stats: {
-        judgment: "The Spirit, Enduring",
-        coreElements: "The Human Condition",
-        readabilityLength: "The Voyage (Short, but Relish the Process)"
-    }
-}
-    ,
-        {
-    title: "Macbeth",
+  {
+    title: "The Tragedy of Julius Caesar",
     author: "William Shakespeare",
-    blurb: "I want you to speak aloud passages that catch your eye. I promise that “Fair is foul, and foul is fair: Hover through the fog and filthy air” and “A drum, a drum. Macbeth doth come” hit so hard when you speak with some oomph. Ambition, murder, paranoia and destruction. Chilling, and real.",
-    sign: "Observance: Beware the whispers of ambition, for they may lead to a crown of thorns.",
-    imageUrl: "macbeth_-1952_-ralph-richardson-as-macbeth_1952_photo-by-angus-mcbean-_c_-rsc_129963.jpg", // <-- REMEMBER TO REPLACE THIS
-    quote: "“Stars, hide your fires; Let not light see my black and deep desires.”",
-    authorPhotoUrl: "images.jpg", // <-- REMEMBER TO REPLACE THIS
+    blurb: "To anyone who says Shakespeare is boring, I always suggest reading this one.\n\nThe title is misleading. This play isn’t really about Caesar, but about the vacuum after Caesar. When the so-called “great man” is gone, a thousand hands grasp for power. Right choices can still lead to wrong endings.\n\nBrutus believes he’s saving Rome. Cassius believes he’s protecting liberty. Antony believes he’s honoring Caesar. And every single one of them leaves a mess behind. This tragedy is electrifying and brutal because everyone thinks they’re right.",
+    sign: "Observance: Read it aloud, and let it ring in your ears.",
+    imageUrl: "caesar.jpg", // <-- REPLACE
+    quote: "“Cry ‘Havoc!’ and let slip the dogs of war, / That this foul deed shall smell above the earth / With carrion men groaning for burial.”\n\n“Men at some time are masters of their fates. / The fault, dear Brutus, is not in our stars, / But in ourselves, that we are underlings.”",
+    authorPhotoUrl: "image.jpg", // <-- REPLACE
     stats: {
-        judgment: "The Corrupting Prophecy",
-        coreElements: "The Descent into Madness (Ambition, Guilt)",
-        readabilityLength: "The Dramatic Act (Intense, Concise Play)"
+      judgment: "The Knife",
+      coreElements: "Power, Persuasion, Public Theater",
+      readabilityLength: "Medium-length Play"
     }
-}
-,
-      {
-    title: "The Ones Who Walked Away from Omelas",
-    author: "Ursula K. Le Guin",
-    blurb: "A super short, super unsettling story about a seemingly utopian city, but the catch is that the boundless happiness is predicated on the perpetual misery of a single child. I first read this in the utilitarian philosopher Peter Singer’s class on practical ethics. You will question everything that you live by… sounds like a fun, chill Thursday read.",
-    sign: "Observance: Nothing comes without a price – the question is, can you afford to pay it?",
-    imageUrl: "TheOnesWhoWalkAwayFromOmelas.jpg", // <-- REMEMBER TO REPLACE THIS
-    quote: "“They leave Omelas, they walk ahead into the darkness, and they do not come back. The place they go towards is a place even less imaginable to most of us than the city of happiness. I cannot describe it at all. It is possible that it does not exist. But they seem to know where they are going, the ones who walk away from Omelas.”",
-    authorPhotoUrl: "le_guin_ursula_WD.jpg", // <-- REMEMBER TO REPLACE THIS
+  },
+  {
+    title: "The Economic Naturalist",
+    author: "Robert H. Frank",
+    blurb: "I want you to look at the world and ask “why?” more often. Why do drive-through ATMs have Braille? Why are milk cartons square and soda cans round? Pick a question, dive in, and share your favorite riddle.\n\nFrank teaches us that everything we see and take for granted has a hidden logic behind it based on an economic or human behavioral reason. Always stop to ask “why,” because man-made things were never “always that way.”",
+    sign: "Observance: Use this book as a lens to see the hidden logic that shapes the chaos of daily life.",
+    imageUrl: "theeconomicnaturalist.jpg", // <-- REPLACE
+    quote: "“ATM producers have to make keypads with Braille dots for their walk-up machines anyway, and so it is cheaper to make all machines the same way. The alternative would be to hold two separate inventories and make sure that each machine went to the right destination. If the Braille dots caused trouble for sighted users, the extra expense might be justified. But they do not.”",
+    authorPhotoUrl: "robertfrank.jpg", // <-- REPLACE
     stats: {
-        judgment: "The Ethical Conundrum",
-        coreElements: "The Societal Mirror (Philosophical Critique)",
-        readabilityLength: "The Brief Revelation (Short, Impactful)"
+      judgment: "Hidden Logic",
+      coreElements: "Curiosity, Rationality, Human Behavior",
+      readabilityLength: "Conversational Book, Short Anecdotes, Easy to Dip Into"
     }
-}
+  },
+  {
+    title: "Creation Myth",
+    author: "Malcolm Gladwell",
+    blurb: "Everyone knows the story of Steve Jobs, but here’s a story that’s been largely forgotten by the newer generation. After Jobs visited Xerox PARC and saw the Xerox mouse, he raced back to Apple and started on the iconic one-button Apple mouse. Many deemed Jobs a thief – the hungry fox taking the henhouse’s crown jewels. However, Gladwell’s point is that no technology or innovation is ever simply “invented” and stolen. Instead, he writes that innovation is cultural, and that means matching ideas to the right culture, constraints, and audience.",
+    sign: "Observance: Great innovations don’t belong to the first person who thinks of them. They belong to the culture that grows them.",
+    imageUrl: "stevejobs.jpg", // <-- REPLACE
+    quote: "“Xerox created this perfect environment... It was heaven. But heaven is not a good place to commercialize a product.”",
+    authorPhotoUrl: "malcolmgladwell.jpg", // <-- REPLACE
+    stats: {
+      judgment: "The Fox and the Henhouse",
+      coreElements: "Creativity, Technology, Culture",
+      readabilityLength: "Short essay (20 minute read)"
+    }
+  },
+  {
+    title: "Does It Help to Know History?",
+    author: "Adam Gopnik",
+    blurb: "I pair this short essay with another of this month’s suggested reads, Shakespeare’s play Julius Caesar, because Gopnik summarizes the actions of the great men in this play: “The best argument for reading history is not that it will show us the right thing to do in one case or the other, but rather that it will show us why even doing the right thing rarely works out.”",
+    sign: "Observance: If your GPS says “drive forward” but you see a river, trust your eyes.",
+    imageUrl: "doesithelptoknowhistory.jpg", // <-- REPLACE
+    quote: "“What history generally ‘teaches’ is how hard it is for anyone to control it, including the people who think they're making it.”",
+    authorPhotoUrl: "AdamGopnik.jpg", // <-- REPLACE
+    stats: {
+      judgment: "History is a Compass, Not a Crystal Ball",
+      coreElements: "Context, Caution, Perspective",
+      readabilityLength: "Short essay (5 minutes)"
+    }
+  }
+];
 
-  ];
 
   let availableBooks = []; // Books not yet seen in the current cycle
   let seenBooks = []; // Books already seen in the current cycle
