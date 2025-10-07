@@ -10,22 +10,24 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Creepster&family=Metal+Mania&display=swap" rel="stylesheet"/>
 
   <style>
-    html, body {
-      height: 100%;
-      overflow-y: auto;
-    }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(to bottom right, #4a0e0e, #1a0505);
-      min-height: 100dvh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    body.no-scroll {
-      overflow: hidden;
-      height: 100dvh;
-    }
+    /* ====== Base / Layout ====== */
+    /* Let the page scroll normally */
+html, body { height: 100%; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(to bottom right, #4a0e0e, #1a0505);
+  min-height: 100dvh;       /* better vh on mobile */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;         /* allow scroll */
+}
+
+/* We’ll only lock background scroll when the overlay is open */
+body.no-scroll {
+  overflow: hidden;
+  height: 100dvh;
+}
 
     .zoltar-container {
       background-color: #2c0808;
@@ -36,9 +38,16 @@
       max-width: 90%;
       width: 650px;
       text-align: center;
+      position: relative;
       z-index: 10;
+      perspective: 1000px;
+      transform-origin: center center;
+      --fit-scale: 1;
+      transform: scale(var(--fit-scale));
+      max-height: calc(100svh - 16px);
     }
 
+    .zoltar-header-image-container { margin-bottom: 1.5rem; display: flex; justify-content: center; align-items: center; }
     .zoltar-header-image {
       max-width: 70%;
       height: auto;
@@ -46,6 +55,7 @@
       box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     }
 
+    /* ====== Card ====== */
     .fortune-card-wrapper {
       position: relative;
       width: 250px;
@@ -56,113 +66,183 @@
       cursor: pointer;
       transition: transform 0.6s ease-in-out, box-shadow 0.3s ease-in-out;
       transform-style: preserve-3d;
+      z-index: 100;
     }
-    .fortune-card-wrapper.flipped {
-      transform: rotateY(180deg);
-      box-shadow: 0 0 20px rgba(255,215,0,0.7), 0 0 40px rgba(255,215,0,0.4);
-    }
+    .fortune-card-wrapper.flipped { transform: rotateY(180deg); box-shadow: 0 0 20px rgba(255,215,0,0.7), 0 0 40px rgba(255,215,0,0.4); }
+
     .fortune-card-face {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
-      border-radius: 15px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 2rem 1.5rem;
+      position: absolute; width: 100%; height: 100%;
+      backface-visibility: hidden; border-radius: 15px;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      padding: 2rem 1.5rem; box-sizing: border-box;
     }
-    .fortune-card-front {
-      background: linear-gradient(to bottom right, #8b0000, #4a0000);
-      border: 4px solid #ffd700;
+    .fortune-card-front { background: linear-gradient(to bottom right, #8b0000, #4a0000); border: 4px solid #ffd700; z-index: 2; }
+    .fortune-card-back  { background-color: #f5f5dc; color:#333; border: 4px solid #8b4513; transform: rotateY(180deg); padding: 1rem; overflow: hidden; }
+
+    .fortune-card-text { font-family: 'Metal Mania', cursive; color:#ffd700; font-size:1.8rem; text-shadow: 0 0 5px rgba(255,215,0,0.5); text-align:center; }
+
+    /* Sparkle effect */
+    .fortune-card-wrapper::before {
+      content: ''; position: absolute; top:50%; left:50%;
+      background: radial-gradient(circle at center, #ffd700 0%, transparent 70%);
+      border-radius: 50%; opacity: 0; transform: translate(-50%, -50%) scale(0);
+      z-index: 3; pointer-events: none;
     }
-    .fortune-card-back {
-      background-color: #f5f5dc;
-      border: 4px solid #8b4513;
-      transform: rotateY(180deg);
+    .fortune-card-wrapper.sparkle::before { animation: sparkle-burst 0.7s ease-out forwards; }
+    @keyframes sparkle-burst {
+      0% { opacity:0; transform: translate(-50%, -50%) scale(0); }
+      30%{ opacity:.7; transform: translate(-50%, -50%) scale(1); }
+      100%{ opacity:0; transform: translate(-50%, -50%) scale(1.5); }
     }
 
-    .fortune-card-text {
-      font-family: 'Metal Mania', cursive;
-      color: #ffd700;
-      font-size: 1.8rem;
-      text-shadow: 0 0 5px rgba(255,215,0,0.5);
-      text-align: center;
-    }
-
+    /* ====== Fullscreen overlay ====== */
     .fullscreen-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.8);
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 2rem 0;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity .4s ease, visibility .4s ease;
-      overflow-y: auto;
-      z-index: 1000;
-    }
-    .fullscreen-overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
+  position: fixed; inset: 0; width:100vw; height:100dvh;
+  background-color: rgba(0,0,0,0.8);
+  display: flex; justify-content: center; align-items: flex-start;
+  padding: 2rem 0;               /* breathing room above/below */
+  opacity: 0; visibility: hidden; transition: opacity .5s ease-in-out, visibility .5s;
+  z-index: 1000;
+  overflow-y: auto;               /* <— scroll here */
+  -webkit-overflow-scrolling: touch;   /* iOS smooth scrolling */
+  overscroll-behavior: contain;        /* no background bounce */
+}
+
+    .fullscreen-overlay.active { opacity: 1; visibility: visible; }
 
     .fullscreen-card-content {
-      background-color: #f5f5dc;
-      color: #333;
-      border-radius: 15px;
-      padding: 2rem;
-      width: min(900px, 92%);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+  background-color: #f5f5dc; color:#333;
+  border-radius: 15px; padding: 2rem;
+  width: min(900px, 92%);
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  display: flex; flex-direction: column; align-items: center;
+
+  /* Let the overlay handle scrolling; avoid transform (which can break scroll on iOS) */
+  opacity: 0;
+  transition: opacity .4s ease-out;
+}
+.fullscreen-overlay.active .fullscreen-card-content { opacity: 1; }
+
+    .fullscreen-overlay.active .fullscreen-card-content { transform: scale(1); opacity: 1; }
+
+    .close-button {
+      position: absolute; top: 15px; right: 15px; background:#8b4513; color:#ffd700;
+      border: 2px solid #ffd700; border-radius: 50%; width: 30px; height: 30px;
+      display: flex; justify-content: center; align-items: center; font-size: 1.2rem; font-weight: bold; cursor: pointer;
+      z-index: 1001; transition: background .2s, color .2s;
+    }
+    .close-button:hover { background:#ffd700; color:#8b4513; }
+
+    .fullscreen-top-row {
+      display: flex; flex-direction: column; align-items: center; width: 100%;
+      margin-bottom: 1.5rem; gap: 1.5rem;
+    }
+    @media (min-width: 768px){
+      .fullscreen-top-row { flex-direction: row; justify-content: center; align-items: center; }
+      .fullscreen-image-area, .fullscreen-stats-area { flex: 1; display: flex; flex-direction: column; align-items: center; }
     }
 
-    .book-blurb {
-      font-size: 1rem;
-      line-height: 1.6;
-      color: #555;
-      text-align: justify;
-      margin-bottom: 1.25rem;
-      white-space: normal; /* Allow <br> and wrapping */
+    .book-image {
+      max-width: 200px; height: auto; border-radius: 8px; margin-bottom: 1rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      opacity: 0; transform: scale(0.8) translateY(20px);
+      transition: opacity .5s ease-out, transform .5s ease-out;
+    }
+    .book-image.show { opacity: 1; transform: scale(1) translateY(0); }
+
+    .book-title { font-size: 1.8rem; font-weight: bold; color:#4a0e0e; margin-bottom: .75rem; text-align:center; width:100%;
+      opacity:0; transform: translateY(10px); transition: opacity .5s ease-out .1s, transform .5s ease-out .1s; }
+    .book-title.show { opacity:1; transform: translateY(0); }
+
+    .book-author { font-size: 1.3rem; color:#8b4513; margin-bottom: 1rem; text-align:center; width:100%;
+      opacity:0; transform: translateY(10px); transition: opacity .5s ease-out .2s, transform .5s ease-out .2s; }
+    .book-author.show { opacity:1; transform: translateY(0); }
+
+    .book-blurb { font-size: 1rem; line-height: 1.6; color:#555; text-align: justify; margin-bottom: 1.25rem;
+      opacity:0; transform: translateY(10px); transition: opacity .5s ease-out .3s, transform .5s ease-out .3s; }
+    .book-blurb.show { opacity:1; transform: translateY(0); }
+
+    .book-sign { font-size: 1.1rem; font-style: italic; font-weight: bold; color:#4a0e0e; text-align:center; width:100%;
+      opacity:0; transform: translateY(10px); transition: opacity .5s ease-out .4s, transform .5s ease-out .4s; }
+    .book-sign.show { opacity:1; transform: translateY(0); }
+
+    .book-stats-container {
+      width: 100%; margin: 1rem 0; padding: .5rem 0; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;
+      opacity:0; transform: translateY(10px); transition: opacity .5s ease-out .5s, transform .5s ease-out .5s;
+    }
+    .book-stats-container.show { opacity:1; transform: translateY(0); }
+
+    .stat-item { display:flex; align-items:center; justify-content:flex-start; margin-bottom:.5rem; font-size:.95rem; color:#666; text-align:left; }
+    .stat-item:last-child { margin-bottom: 0; }
+    .stat-icon { width:20px; height:20px; margin-right:.5rem; fill:#8b4513; flex-shrink:0; }
+    .stat-text { font-weight:600; color:#4a0e0e; white-space:nowrap; }
+    .stat-description { font-style: italic; color:#555; margin-left:.3rem; flex-grow:1; }
+
+    .fullscreen-quote-author-row {
+      display:flex; flex-direction:column; align-items:center; width:100%; margin:1.5rem 0; gap:1rem;
+    }
+    @media (min-width: 640px){
+      .fullscreen-quote-author-row { flex-direction:row; justify-content:center; align-items:flex-start; text-align:left; }
+      .quote-column { flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; padding-right:1rem; }
+      .author-photo-column { flex:0 0 auto; display:flex; justify-content:center; align-items:center; padding-left:1rem; }
     }
 
-    .book-quote {
-      font-size: 1.05rem;
-      font-style: italic;
-      color: #8b4513;
-      text-align: left;
-      line-height: 1.5;
-      padding: 0 1rem;
-    }
+    .book-quote { font-size: 1.05rem; font-style: italic; color:#8b4513; text-align:left; line-height:1.5; padding: 0 1rem;
+      opacity:0; transform: translateY(10px); transition: opacity .5s ease-out .45s, transform .5s ease-out .45s; }
+    .book-quote.show { opacity:1; transform: translateY(0); }
 
+    .author-photo {
+      width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #ffd700; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      opacity:0; transform: scale(0.8); transition: opacity .5s ease-out .5s, transform .5s ease-out .5s;
+    }
+    .author-photo.show { opacity:1; transform: scale(1); }
+
+    /* Reading link button */
+    .reading-link-container { width:100%; display:flex; justify-content:center; margin-top:.75rem; }
     .reading-link-btn {
-      display: inline-block;
-      padding: 10px 16px;
-      background-color: #8b4513;
-      color: #ffd700;
-      border: 2px solid #ffd700;
-      border-radius: 10px;
-      font-weight: 700;
-      text-decoration: none;
-      transition: background .2s, color .2s;
+      display:none; padding:10px 16px; background-color:#8b4513; color:#ffd700; border:2px solid #ffd700;
+      border-radius: 10px; font-weight:700; text-decoration:none; box-shadow:0 2px 6px rgba(0,0,0,.25);
+      transition: background .2s, color .2s, transform .05s ease-in-out;
     }
-    .reading-link-btn:hover {
-      background-color: #ffd700;
-      color: #8b4513;
+    .reading-link-btn:active { transform: translateY(1px); }
+    .reading-link-btn:hover { background-color:#ffd700; color:#8b4513; }
+    @media (max-width:480px){ .reading-link-btn { width:100%; text-align:center; } }
+
+    /* Responsive downsizing */
+    @media (max-width: 768px){
+      .fullscreen-card-content { gap:1.5rem; padding:1.5rem; }
+      .book-image { max-width:150px; }
+      .book-title { font-size:1.5rem; }
+      .book-author { font-size:1.1rem; }
+      .book-blurb { font-size:.9rem; }
+      .book-sign { font-size:1rem; }
+      .stat-item { font-size:.85rem; justify-content:center; }
+      .stat-icon { width:18px; height:18px; }
+      .book-quote { font-size:.95rem; }
+      .author-photo { width:100px; height:100px; }
+    }
+    @media (max-width:480px){
+      .fullscreen-card-content { padding:1rem; }
+      .book-image { max-width:120px; }
+      .book-title { font-size:1.3rem; }
+      .book-author { font-size:1rem; }
+      .book-blurb { font-size:.85rem; }
+      .book-sign { font-size:.9rem; }
+      .stat-item { font-size:.8rem; }
+      .stat-icon { width:16px; height:16px; }
+      .book-quote { font-size:.85rem; }
+      .author-photo { width:80px; height:80px; }
     }
   </style>
 </head>
-
 <body>
   <div class="zoltar-container">
-    <img src="Screen Shot 2025-07-01 at 1.07.46 AM.png" alt="Philip's Book Diviner" class="zoltar-header-image">
+    <div class="zoltar-header-image-container">
+      <img src="Screen Shot 2025-07-01 at 1.07.46 AM.png" alt="Philip's Book Diviner" class="zoltar-header-image">
+    </div>
     <p class="text-gray-300 mb-6">Click the card to reveal your next literary adventure!</p>
-    <p class="text-gray-300 text-sm mb-4">© Philip's Book Club 2025</p>
+    <p class="text-gray-300 text-sm">© Philip's Book Club 2025</p>
 
     <div id="fortuneCardWrapper" class="fortune-card-wrapper">
       <div id="fortuneCardFront" class="fortune-card-face fortune-card-front">
@@ -183,64 +263,366 @@
     <div id="fullscreenCardContent" class="fullscreen-card-content">
       <button id="closeButton" class="close-button" aria-label="Close">X</button>
 
-      <img id="fullscreenBookImage" class="book-image" src="" alt="Book Cover">
+      <div class="fullscreen-top-row">
+        <div class="fullscreen-image-area">
+          <img id="fullscreenBookImage" class="book-image" src="" alt="Book Cover">
+        </div>
+        <div class="fullscreen-stats-area">
+          <div id="bookStatsContainer" class="book-stats-container">
+            <div class="stat-item">
+              <svg class="stat-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+              <span class="stat-text">Judgment:</span> <span id="statJudgment" class="stat-description"></span>
+            </div>
+            <div class="stat-item">
+              <svg class="stat-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              <span class="stat-text">Core Elements:</span> <span id="statCoreElements" class="stat-description"></span>
+            </div>
+            <div class="stat-item">
+              <svg class="stat-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7zm-.5-13h-1v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+              <span class="stat-text">Readability/Length:</span> <span id="statReadabilityLength" class="stat-description"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <p id="fullscreenBookTitle" class="book-title"></p>
       <p id="fullscreenBookAuthor" class="book-author"></p>
       <p id="fullscreenBookBlurb" class="book-blurb"></p>
-      <p id="fullscreenBookQuote" class="book-quote"></p>
+
+      <div class="fullscreen-quote-author-row">
+        <div class="quote-column">
+          <p id="fullscreenBookQuote" class="book-quote"></p>
+        </div>
+        <div class="author-photo-column">
+          <img id="fullscreenAuthorPhoto" class="author-photo" src="" alt="Author Photo">
+        </div>
+      </div>
+
       <p id="fullscreenBookSign" class="book-sign"></p>
-      <a id="readingLinkBtn" class="reading-link-btn" href="#" target="_blank" rel="noopener noreferrer"></a>
+
+      <div class="reading-link-container">
+        <a id="readingLinkBtn" class="reading-link-btn" href="#" target="_blank" rel="noopener noreferrer"></a>
+      </div>
     </div>
   </div>
 
   <script>
+    // ====================== Data ======================
     const allBooks = [
-      {
-        title: "Mark Antony’s Speech",
-        author: "William Shakespeare",
-        blurb: "In Julius Caesar, Caesar is dead. Mark Antony, his close ally, steps into the Forum surrounded by enemies to address the people of Rome. He must turn them against Brutus without ever saying so outright.<br><br>“I come to bury Caesar, not to praise him,” Antony begins with deference. But line by line, his tone shifts — “Brutus is an honorable man,” he repeats until it drips with irony.",
-        sign: "Observance: The true orator doesn’t convince you — he gets you to convince yourself.",
-        imageUrl: "markantonycover.jpg",
-        quote: "“O judgment! thou art fled to brutish beasts,<br>And men have lost their reason… My heart is in the coffin there with Caesar,<br>And I must pause till it come back to me.”",
-        readingLink: "https://drive.google.com/file/d/1wRkyawNp-LJ-L0oGvzXFOaeLZglo9UOz/view?usp=drive_link",
-        readingLabel: "Read the speech",
-      },
-      {
-        title: "The Panda’s Thumb",
-        author: "Stephen Jay Gould",
-        blurb: "Why does the panda have a thumb that isn’t a thumb?<br><br>Science writing for a general audience can be as magical as fiction. Gould uses one odd observation to explore evolution’s creativity — how nature, like a tinkerer, works with what it has to build beauty and complexity.",
-        sign: "Observance: Ask a good question and your reader is hooked — now take them for a ride.",
-        imageUrl: "pandasthumbcover.jpg",
-        quote: "“Nature is, in biologist François Jacob’s words, an excellent tinkerer, not a divine artificer. And who shall sit in judgment between these exemplary skills?”",
-        readingLink: "https://drive.google.com/file/d/1QQjOlNrqH-R98Od5R-oPtH7ETFtg4isK/view?usp=drive_link",
-        readingLabel: "Read the essay"
-      }
-    ];
+  {
+    title: "Object Permanence in Five-Month-Old Infants",
+    author: "Renée Baillargeon et al. (1985)",
+    blurb:
+      "When we think about good writing, we usually forget about scientific studies! We are always afraid of biases/misrepresentations of study summaries in the news, so let’s get to the source. Learn to read through methodology and evaluate the conclusions for yourself! In this 1985 study, Baillargeon and colleagues revealed that infants, months before they can even crawl, already expect the world to obey hidden rules. Prior, Piaget had claimed that once out of sight, infants lose object permanence. But this “drawbridge” experiment overturned a long accepted claim.",
+    sign:
+      "Observance: The devil is in the details, but don’t fear nuance. Use it!",
+    imageUrl: "objectpermanencecover.jpg", // <-- optional cover image
+    quote:
+      "“The general problem for research is not to establish whether young infants believe objects are permanent. Rather, it is to determine what infants know about the displacements and transformations of objects, and how they attain and represent this knowledge.”",
+    authorPhotoUrl: "Renee Baillargeon.jpg", // <-- optional author photo
+    readingLink:
+      "https://drive.google.com/file/d/1Sz4QaJjzRuv8srZhnOqlLf0F8ieqoYSh/view?usp=drive_link",
+    readingLabel: "Read the paper",
+    stats: {
+      judgment: "The Eyes Know Before the Hands Do",
+      coreElements:
+        "Methodology, Violation-of-Expectation, Perception vs. Action, Experimental Design, Inference",
+      readabilityLength: "Psychology Research Paper"
+    }
+  },
+  {
+    title: "Mark Antony’s Speech",
+    author: "William Shakespeare",
+    blurb:
+      "In Julius Caesar, Caesar is dead. Mark Antony, his close ally, steps into the Forum surrounded by enemies to address the people of Rome. He must turn the people of Rome against Brutus without ever saying so outright. “I come to bury Caesar, not to praise him,” Mark Antony begins with deference. But line by line, his power over the people grows, and his tone shifts. “Brutus is an honorable man,” he repeats over and over again until it drips with venom, quietly lifting Caesar’s corpse as evidence.",
+    sign:
+      "Observance: The true orator doesn’t convince you. He gets you to convince yourself.",
+    imageUrl: "markantonycover.jpg", // <-- optional image
+    quote:
+      "“O judgment! thou art fled to brutish beasts, / And men have lost their reason… My heart is in the coffin there with Caesar, / And I must pause till it come back to me.”",
+    authorPhotoUrl: "images.jpg", // <-- optional photo
+    readingLink:
+      "https://drive.google.com/file/d/1wRkyawNp-LJ-L0oGvzXFOaeLZglo9UOz/view?usp=drive_link",
+    readingLabel: "Read the speech",
+    stats: {
+      judgment: "The Magic Words",
+      coreElements:
+        "Irony, Rhythm, Reversal, Restraint, Performance, Persuasion",
+      readabilityLength: "Speech from Shakespeare’s Julius Caesar"
+    }
+  },
+  {
+    title: "The Panda’s Thumb",
+    author: "Stephen Jay Gould",
+    blurb:
+       "Why does the panda have a thumb that isn’t a thumb? Science writing for a general audience can be just as magical as fiction. Learn how Stephen Jay Gould uses an odd observation to take you into a larger discussion into evolution and its creative adaptation. This essay shows that great science writing can be elegant, curious, and alive with metaphor.",
+    sign:
+      "Observance: Ask a good question and your reader is hooked—now take them for a ride.",
+    imageUrl: "pandasthumbcover.jpg", // <-- optional cover image
+    quote:
+      "“Nature is, in biologist François Jacob’s words, an excellent tinkerer, not a divine artificer. And who shall sit in judgment between these exemplary skills?”",
+    authorPhotoUrl: "StephenGould.jpg", // <-- optional author photo
+    readingLink:
+      "https://drive.google.com/file/d/1QQjOlNrqH-R98Od5R-oPtH7ETFtg4isK/view?usp=drive_link",
+    readingLabel: "Read the chapter",
+    stats: {
+      judgment: "Start with What Doesn’t Fit.",
+      coreElements:
+        "Evolution, Constraint, Tinkering, Analogy, Scientific Writing",
+      readabilityLength: "First chapter of Gould's titular book"
+    }
+  },
+  {
+    title: "No Country for Old Men",
+    author: "Cormac McCarthy",
+    blurb:
+      "A man finds a suitcase of drug money in the desert. A killer follows. A sheriff looks on, too old and too wise to stop what’s coming. “No Country for Old Men” reads like a modern Western thriller, but McCarthy’s real genius is in the unpretentious prose, the silence and lack of luxury for chance and violence. Note how the sparse punctuation and biblical rhythm is paired with realism and moral exhaustion, like a bordeaux and a skirt steak.",
+    sign:
+      "Observance: At the crossroads, beware the man who lets chance decide. He’s already decided.",
+    imageUrl: "nocountrycover.jpg",
+    quote:
+      "“If the rule you followed brought you to this, of what use was the rule?”",
+    authorPhotoUrl: "CormacMcCarthy.jpg", // <-- optional author photo
+    readingLink:
+      "https://drive.google.com/file/d/19bpeKx1rQQrgZkKKWX25-af4TURysWB6/view?usp=drive_link",
+    readingLabel: "Read the book",
+    stats: {
+      judgment: "The Coin Toss",
+      coreElements: "Chance, Morality, Violence, Fate, Order vs. Chaos",
+      readabilityLength: "Short Novel"
+    }
+  }
+];
+
+    // ====================== State & Elements ======================
+    let availableBooks = [];
+    let seenBooks = [];
+    let currentBook = null;
 
     const fortuneCardWrapper = document.getElementById('fortuneCardWrapper');
+    const smallBookImage = document.getElementById('smallBookImage');
+    const smallBookTitle = document.getElementById('smallBookTitle');
+    const smallBookAuthor = document.getElementById('smallBookAuthor');
+    const smallBookSign = document.getElementById('smallBookSign');
+
     const fullscreenOverlay = document.getElementById('fullscreenOverlay');
+    const closeButton = document.getElementById('closeButton');
+    const fullscreenBookImage = document.getElementById('fullscreenBookImage');
     const fullscreenBookTitle = document.getElementById('fullscreenBookTitle');
     const fullscreenBookAuthor = document.getElementById('fullscreenBookAuthor');
     const fullscreenBookBlurb = document.getElementById('fullscreenBookBlurb');
     const fullscreenBookQuote = document.getElementById('fullscreenBookQuote');
+    const fullscreenAuthorPhoto = document.getElementById('fullscreenAuthorPhoto');
     const fullscreenBookSign = document.getElementById('fullscreenBookSign');
+    const bookStatsContainer = document.getElementById('bookStatsContainer');
+    const statJudgment = document.getElementById('statJudgment');
+    const statCoreElements = document.getElementById('statCoreElements');
+    const statReadabilityLength = document.getElementById('statReadabilityLength');
     const readingLinkBtn = document.getElementById('readingLinkBtn');
 
+    // ====================== Helpers ======================
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function preloadImages(urls) {
+      urls.forEach(url => { const img = new Image(); img.src = url; });
+    }
+
+    function initializeBooks() {
+      availableBooks = shuffleArray([...allBooks]);
+      seenBooks = [];
+      const toPreload = [];
+      allBooks.forEach(b => {
+        if (b.imageUrl) toPreload.push(b.imageUrl);
+        if (b.authorPhotoUrl) toPreload.push(b.authorPhotoUrl);
+      });
+      preloadImages(toPreload);
+    }
+
+    function hideSmallCardDetails() {
+      smallBookImage.classList.remove('show');
+      smallBookTitle.classList.remove('show');
+      smallBookAuthor.classList.remove('show');
+      smallBookSign.classList.remove('show');
+    }
+
+    function hideFullscreenDetails() {
+      fullscreenBookImage.classList.remove('show');
+      fullscreenBookTitle.classList.remove('show');
+      fullscreenBookAuthor.classList.remove('show');
+      fullscreenBookBlurb.classList.remove('show');
+      fullscreenBookSign.classList.remove('show');
+      fullscreenBookQuote.classList.remove('show');
+      fullscreenAuthorPhoto.classList.remove('show');
+      bookStatsContainer.classList.remove('show');
+      // Hide reading link
+      readingLinkBtn.style.display = 'none';
+      readingLinkBtn.removeAttribute('href');
+      readingLinkBtn.textContent = '';
+    }
+
+    // ====================== Viewport fit (scales without scroll jumps) ======================
+    const zoltarContainer = document.querySelector('.zoltar-container');
+    const fullscreenCardContentEl = document.getElementById('fullscreenCardContent');
+
+    function scaleElementToViewport(el, margin = 12) {
+      if (!el) return;
+      el.style.setProperty('--fit-scale', 1);
+      const rect = el.getBoundingClientRect();
+      const availW = Math.max(0, window.innerWidth  - margin * 2);
+      const availH = Math.max(0, window.innerHeight - margin * 2);
+      const baseW = Math.max(1, rect.width);
+      const baseH = Math.max(1, rect.height);
+      const scale = Math.min(availW / baseW, availH / baseH, 1);
+      el.style.setProperty('--fit-scale', scale);
+    }
+    function refitAll() {
+      scaleElementToViewport(zoltarContainer);
+      if (fullscreenOverlay.classList.contains('active')) {
+        scaleElementToViewport(fullscreenCardContentEl, 16);
+      }
+    }
+    window.addEventListener('resize', refitAll);
+    window.addEventListener('orientationchange', refitAll);
+
+    // ====================== Interaction ======================
     fortuneCardWrapper.addEventListener('click', () => {
-      const book = allBooks[Math.floor(Math.random() * allBooks.length)];
-      fullscreenBookTitle.innerHTML = `<b>${book.title}</b>`;
-      fullscreenBookAuthor.textContent = book.author;
-      fullscreenBookBlurb.innerHTML = book.blurb;
-      fullscreenBookQuote.innerHTML = book.quote;
-      fullscreenBookSign.innerHTML = `<i>${book.sign}</i>`;
-      readingLinkBtn.href = book.readingLink;
-      readingLinkBtn.textContent = book.readingLabel;
-      fullscreenOverlay.classList.add('active');
+      fortuneCardWrapper.classList.add('sparkle');
+      setTimeout(() => fortuneCardWrapper.classList.remove('sparkle'), 700);
+
+      if (fullscreenOverlay.classList.contains('active')) return;
+
+      if (fortuneCardWrapper.classList.contains('flipped')) {
+        fortuneCardWrapper.classList.remove('flipped');
+        hideSmallCardDetails();
+      } else {
+        revealNewBook();
+      }
     });
 
-    document.getElementById('closeButton').addEventListener('click', () => {
+    closeButton.addEventListener('click', closeFullscreen);
+    fullscreenOverlay.addEventListener('click', (e) => {
+      // close if clicking dark backdrop
+      if (e.target === fullscreenOverlay) closeFullscreen();
+    });
+
+    function revealNewBook() {
+      let selectedBook;
+
+      if (availableBooks.length === 0) {
+        selectedBook = {
+          title: "Oops! I have revealed too much.",
+          author: "",
+          blurb: "My mystical energies are depleted for now. The secrets of the cosmos must rest.",
+          sign: "Come back next month. Read… if you dare.",
+          imageUrl: "Tired.jpg",
+          quote: "",
+          authorPhotoUrl: "",
+          stats: {}
+        };
+        setTimeout(initializeBooks, 5000);
+      } else {
+        const idx = Math.floor(Math.random() * availableBooks.length);
+        selectedBook = availableBooks[idx];
+        availableBooks.splice(idx, 1);
+        seenBooks.push(selectedBook);
+      }
+
+      currentBook = selectedBook;
+
+      smallBookImage.src = currentBook.imageUrl || "https://placehold.co/150x225/000/FFF?text=No+Cover";
+      smallBookImage.alt = currentBook.title ? `${currentBook.title} cover` : "Book Cover";
+      smallBookTitle.innerHTML = `<b>${currentBook.title || ""}</b>`;
+      smallBookAuthor.textContent = currentBook.author || "";
+      smallBookSign.innerHTML = currentBook.sign ? `<b><i>${currentBook.sign}</i></b>` : "";
+
+      fortuneCardWrapper.classList.add('flipped');
+
+      setTimeout(() => {
+        showFullscreenBook();
+      }, 600);
+    }
+
+    function showFullscreenBook() {
+      fullscreenBookImage.src = currentBook.imageUrl || "https://placehold.co/300x450/000/FFF?text=No+Cover";
+      fullscreenBookImage.alt = currentBook.title ? `${currentBook.title} cover` : "Book Cover";
+      fullscreenBookTitle.innerHTML = `<b>${currentBook.title || ""}</b>`;
+      fullscreenBookAuthor.textContent = currentBook.author || "";
+      fullscreenBookBlurb.innerHTML = currentBook.blurb || "";
+      fullscreenBookSign.innerHTML = currentBook.sign ? `<b><i>${currentBook.sign}</i></b>` : "";
+      fullscreenBookQuote.innerHTML = currentBook.quote || "";
+      fullscreenAuthorPhoto.src = currentBook.authorPhotoUrl || "";
+      fullscreenAuthorPhoto.alt = currentBook.author ? `${currentBook.author} photo` : "Author Photo";
+
+      // Stats
+      if (currentBook.stats && Object.keys(currentBook.stats).length) {
+        statJudgment.textContent = currentBook.stats.judgment || "";
+        statCoreElements.textContent = currentBook.stats.coreElements || "";
+        statReadabilityLength.textContent = currentBook.stats.readabilityLength || "";
+        bookStatsContainer.classList.add('show');
+      } else {
+        bookStatsContainer.classList.remove('show');
+      }
+
+      // Reading link
+      if (currentBook.readingLink && currentBook.readingLabel) {
+        readingLinkBtn.href = currentBook.readingLink;
+        readingLinkBtn.textContent = currentBook.readingLabel;
+        readingLinkBtn.style.display = 'inline-block';
+      } else {
+        readingLinkBtn.style.display = 'none';
+        readingLinkBtn.removeAttribute('href');
+        readingLinkBtn.textContent = '';
+      }
+
+      fullscreenOverlay.classList.add('active');
+      document.body.classList.remove('no-scroll');
+
+      setTimeout(() => {
+        fullscreenBookImage.classList.add('show');
+        fullscreenBookTitle.classList.add('show');
+        fullscreenBookAuthor.classList.add('show');
+        fullscreenBookBlurb.classList.add('show');
+        fullscreenBookSign.classList.add('show');
+        if (currentBook.quote) fullscreenBookQuote.classList.add('show');
+        if (currentBook.authorPhotoUrl) fullscreenAuthorPhoto.classList.add('show');
+      }, 100);
+
+      // Fit after animation mounts
+      setTimeout(refitAll, 60);
+    }
+
+    function closeFullscreen() {
+      hideFullscreenDetails();
       fullscreenOverlay.classList.remove('active');
+      fortuneCardWrapper.classList.remove('flipped');
+      hideSmallCardDetails();
+      setTimeout(refitAll, 60);
+    }
+
+    // ====================== Init ======================
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeBooks();
+      fortuneCardWrapper.classList.remove('flipped');
+      hideSmallCardDetails();
+      hideFullscreenDetails();
+      fullscreenOverlay.classList.remove('active');
+
+      smallBookImage.src = "https://placehold.co/150x225/000000/FFFFFF?text=Click+Card";
+      smallBookImage.alt = "Click the card";
+      smallBookTitle.textContent = "Your Literary Journey Awaits...";
+      smallBookAuthor.textContent = "Click the card to discover your next read.";
+      smallBookSign.textContent = "";
+
+      // Fit once UI is ready
+      requestAnimationFrame(() => requestAnimationFrame(refitAll));
     });
   </script>
 </body>
 </html>
+
