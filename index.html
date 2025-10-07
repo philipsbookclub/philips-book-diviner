@@ -555,7 +555,7 @@ body.no-scroll {
       fullscreenBookAuthor.textContent = currentBook.author || "";
       fullscreenBookBlurb.textContent = currentBook.blurb || "";
       fullscreenBookSign.innerHTML = currentBook.sign ? `<b><i>${currentBook.sign}</i></b>` : "";
-      fullscreenBookQuote.textContent = currentBook.quote || "";
+      fullscreenBookQuote.innerHTML = currentBook.quote || "";
       fullscreenAuthorPhoto.src = currentBook.authorPhotoUrl || "";
       fullscreenAuthorPhoto.alt = currentBook.author ? `${currentBook.author} photo` : "Author Photo";
 
