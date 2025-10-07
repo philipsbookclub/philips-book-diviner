@@ -553,7 +553,7 @@ body.no-scroll {
       fullscreenBookImage.alt = currentBook.title ? `${currentBook.title} cover` : "Book Cover";
       fullscreenBookTitle.innerHTML = `<b>${currentBook.title || ""}</b>`;
       fullscreenBookAuthor.textContent = currentBook.author || "";
-      fullscreenBookBlurb.textContent = currentBook.blurb || "";
+      fullscreenBookBlurb.innerHTML = currentBook.blurb || "";
       fullscreenBookSign.innerHTML = currentBook.sign ? `<b><i>${currentBook.sign}</i></b>` : "";
       fullscreenBookQuote.innerHTML = currentBook.quote || "";
       fullscreenAuthorPhoto.src = currentBook.authorPhotoUrl || "";
