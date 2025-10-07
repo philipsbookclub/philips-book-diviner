@@ -309,71 +309,90 @@ body.no-scroll {
   <script>
     // ====================== Data ======================
     const allBooks = [
-      {
-        title: "The Tragedy of Julius Caesar",
-        author: "William Shakespeare",
-        blurb: "To anyone who says Shakespeare is boring, I always suggest reading this one.\n\nThe title is misleading. This play isn’t really about Caesar, but about the vacuum after Caesar. When the so-called “great man” is gone, a thousand hands grasp for power. Right choices can still lead to wrong endings.\n\nBrutus believes he’s saving Rome. Cassius believes he’s protecting liberty. Antony believes he’s honoring Caesar. And every single one of them leaves a mess behind. This tragedy is electrifying and brutal because everyone thinks they’re right.",
-        sign: "Observance: Read it aloud, and let it ring in your ears.",
-        imageUrl: "caesar.jpg",
-        quote: "“Cry ‘Havoc!’ and let slip the dogs of war, / That this foul deed shall smell above the earth / With carrion men groaning for burial.”\n\n“Men at some time are masters of their fates. / The fault, dear Brutus, is not in our stars, / But in ourselves, that we are underlings.”",
-        authorPhotoUrl: "images.jpg",
-        readingLink: "https://drive.google.com/file/d/1F2FvuCz1RcBemkdXw-rpjanVFr6nxJq8/view?usp=drive_link",
-        readingLabel: "Read Here!",
-        stats: {
-          judgment: "The Knife",
-          coreElements: "Power, Persuasion, Public Theater",
-          readabilityLength: "Medium-length Play"
-        }
-      },
-      {
-        title: "The Economic Naturalist",
-        author: "Robert H. Frank",
-        blurb: "I want you to look at the world and ask “why?” more often. Why do drive-through ATMs have Braille? Why are milk cartons square and soda cans round? Pick a question, dive in, and share your favorite riddle.\n\nFrank teaches us that everything we see and take for granted has a hidden logic behind it based on an economic or human behavioral reason. Always stop to ask “why,” because man-made things were never “always that way.”",
-        sign: "Observance: Use this book as a lens to see the hidden logic that shapes the chaos of daily life.",
-        imageUrl: "theeconomicnaturalist.jpg",
-        quote: "“ATM producers have to make keypads with Braille dots for their walk-up machines anyway, and so it is cheaper to make all machines the same way...”",
-        authorPhotoUrl: "robertfrank.jpg",
-        readingLink: "https://drive.google.com/file/d/1egpcERtuAAxfHD4l76Qxts2vAzx7VD0R/view?usp=drive_link",
-        readingLabel: "Read Here!",
-        stats: {
-          judgment: "Hidden Logic",
-          coreElements: "Curiosity, Rationality, Human Behavior",
-          readabilityLength: "Conversational book; short anecdotes"
-        }
-      },
-      {
-        title: "Creation Myth",
-        author: "Malcolm Gladwell",
-        blurb: "Everyone knows the story of Steve Jobs, but here’s a story that’s been largely forgotten by the newer generation. After Jobs visited Xerox PARC and saw the Xerox mouse, he raced back to Apple and started on the iconic one-button Apple mouse. Many deemed Jobs a thief – the hungry fox taking the henhouse’s crown jewels. However, Gladwell’s point is that no technology or innovation is ever simply “invented” and stolen. Instead, he writes that innovation is cultural, and that means matching ideas to the right culture, constraints, and audience.",
-        sign: "Observance: Great innovations don’t belong to the first person who thinks of them. They belong to the culture that grows them.",
-        imageUrl: "stevejobs.jpg",
-        quote: "“Xerox created this perfect environment... It was heaven. But heaven is not a good place to commercialize a product.”",
-        authorPhotoUrl: "malcolmgladwell.jpg",
-        readingLink: "https://drive.google.com/file/d/1rxqBqON55kjjI9e0DpXeLwTZRtbdK3I1/view?usp=drive_link",
-        readingLabel: "Read Here!",
-        stats: {
-          judgment: "The Fox and the Henhouse",
-          coreElements: "Creativity, Technology, Culture",
-          readabilityLength: "Short essay (~20 min)"
-        }
-      },
-      {
-        title: "Does It Help to Know History?",
-        author: "Adam Gopnik",
-        blurb: "I pair this short essay with another of this month’s suggested reads, Shakespeare’s play Julius Caesar, because Gopnik summarizes the actions of the great men in this play: “The best argument for reading history is not that it will show us the right thing to do in one case or the other, but rather that it will show us why even doing the right thing rarely works out.”",
-        sign: "Observance: If your GPS says “drive forward” but you see a river, trust your eyes.",
-        imageUrl: "doesithelptoknowhistory.jpg",
-        quote: "“What history generally ‘teaches’ is how hard it is for anyone to control it, including the people who think they're making it.”",
-        authorPhotoUrl: "AdamGopnik.jpg",
-        readingLink: "https://drive.google.com/file/d/1APBevSxmLGmVVSd1dirDsnwoR6nD6EDj/view?usp=drive_link",
-        readingLabel: "Read Here!",
-        stats: {
-          judgment: "History is a Compass, Not a Crystal Ball",
-          coreElements: "Context, Caution, Perspective",
-          readabilityLength: "Short essay (~5 min)"
-        }
-      }
-    ];
+  {
+    title: "Object Permanence in Five-Month-Old Infants",
+    author: "Renée Baillargeon et al. (1985)",
+    blurb:
+      "When we think about good writing, we forget scientific papers. Let’s go straight to the source: read the methods and weigh the conclusions yourself. This classic “drawbridge” study shows that even before crawling, infants expect the world to obey hidden rules—overturning Piaget’s claim that unseen objects ‘cease to exist’ for babies.",
+    sign:
+      "Observance: The devil is in the details, but don’t fear nuance—use it.",
+    imageUrl: "objectpermanencecover.jpg", // <-- optional cover image
+    quote:
+      "“The general problem for research is not to establish whether young infants believe objects are permanent. Rather, it is to determine what infants know about the displacements and transformations of objects, and how they attain and represent this knowledge.”",
+    authorPhotoUrl: "Renee Baillargeon.jpg", // <-- optional author photo
+    readingLink:
+      "https://drive.google.com/file/d/1Sz4QaJjzRuv8srZhnOqlLf0F8ieqoYSh/view?usp=drive_link",
+    readingLabel: "Read the paper",
+    stats: {
+      judgment: "The Eyes Know Before the Hands Do",
+      coreElements:
+        "Methodology, Violation-of-Expectation, Perception vs. Action, Experimental Design, Inference",
+      readabilityLength: "Psychology Research Paper"
+    }
+  },
+  {
+    title: "Mark Antony’s Speech",
+    author: "William Shakespeare",
+    blurb:
+      "Caesar is dead. In the Forum, Antony must turn Rome against Brutus—without ever saying so outright. He begins with deference (“I come to bury Caesar…”) and repeats “Brutus is an honorable man” until the phrase corrodes from praise into poison. Item by item, prop by prop, rhythm by rhythm, he lets the crowd persuade itself.",
+    sign:
+      "Observance: The true orator doesn’t convince you—he gets you to convince yourself.",
+    imageUrl: "markantonycover.jpg", // <-- optional image
+    quote:
+      "“O judgment! thou art fled to brutish beasts, / And men have lost their reason… My heart is in the coffin there with Caesar, / And I must pause till it come back to me.”",
+    authorPhotoUrl: "images.jpg", // <-- optional photo
+    readingLink:
+      "https://drive.google.com/file/d/1wRkyawNp-LJ-L0oGvzXFOaeLZglo9UOz/view?usp=drive_link",
+    readingLabel: "Read the speech",
+    stats: {
+      judgment: "The Magic Words",
+      coreElements:
+        "Irony, Rhythm, Reversal, Restraint, Performance, Persuasion",
+      readabilityLength: "Speech from Shakespeare’s Julius Caesar"
+    }
+  },
+  {
+    title: "The Panda’s Thumb",
+    author: "Stephen Jay Gould",
+    blurb:
+      "Why does the panda have a thumb that isn’t a thumb? Gould starts with an oddity and opens into a bigger argument about evolution’s tinkering—how constraint and history shape elegant, workable solutions. A masterclass in science writing: curious, metaphor-rich, and crystal clear without dumbing down the science.",
+    sign:
+      "Observance: Ask a good question and your reader is hooked—now take them for a ride.",
+    imageUrl: "pandasthumbcover.jpg", // <-- optional cover image
+    quote:
+      "“Nature is, in biologist François Jacob’s words, an excellent tinkerer, not a divine artificer. And who shall sit in judgment between these exemplary skills?”",
+    authorPhotoUrl: "StephenGould.jpg", // <-- optional author photo
+    readingLink:
+      "https://drive.google.com/file/d/1QQjOlNrqH-R98Od5R-oPtH7ETFtg4isK/view?usp=drive_link",
+    readingLabel: "Read the essay",
+    stats: {
+      judgment: "Start with What Doesn’t Fit",
+      coreElements:
+        "Evolution, Constraint, Tinkering, Analogy, Scientific Writing",
+      readabilityLength: "First chapter (standalone essay)"
+    }
+  },
+  {
+    title: "No Country for Old Men",
+    author: "Cormac McCarthy",
+    blurb:
+      "A hunter finds a suitcase of cash. A killer follows. A sheriff watches a world he no longer understands. The thriller engine hums, but McCarthy’s real power comes from the austere prose and moral exhaustion: chance as a creed, violence without glamour, silence that rings louder than speeches.",
+    sign:
+      "Observance: At the crossroads, beware the man who lets chance decide—he’s already decided.",
+    imageUrl: "nocountrycover.jpg",
+    quote:
+      "“If the rule you followed brought you to this, of what use was the rule?”",
+    authorPhotoUrl: "CormacMcCarthy.jpg", // <-- optional author photo
+    readingLink:
+      "https://drive.google.com/file/d/19bpeKx1rQQrgZkKKWX25-af4TURysWB6/view?usp=drive_link",
+    readingLabel: "Read excerpt / PDF",
+    stats: {
+      judgment: "The Coin Toss",
+      coreElements: "Chance, Morality, Violence, Fate, Order vs. Chaos",
+      readabilityLength: "Short Novel"
+    }
+  }
+];
 
     // ====================== State & Elements ======================
     let availableBooks = [];
